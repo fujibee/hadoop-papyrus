@@ -32,7 +32,19 @@ col5    404     1
 col6    6978
 
 == Usage
+0. HADOOP_HOMEを正しく設定し、Hadoopを一式立ち上げておく。
 
+1. jruby-complete-*.jar を lib/java 以下にコピー
+ex)
+$ wget http://jruby.kenai.com/downloads/1.4.0RC2/jruby-complete-1.4.0RC2.jar
+$ cp jruby-complete-*.jar lib/java/
+
+2. データを HDFS にアップロード
+ex)
+$ hadoop dfs -copyFromLocal apachelog inputs/
+
+3. MapReduce実行
+$ bin/hadoop-ruby.sh examples/apachelog.rb inputs outputs
 
 == Author
 Koichi Fujikawa <fujibee@gmail.com>
