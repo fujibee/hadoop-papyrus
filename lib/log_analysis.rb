@@ -41,7 +41,8 @@ module HadoopDsl::LogAnalysis
 
     def column(index, &block)
       @current = @columns[index]
-      yield
+      yield if block_given?
+      @current || Column.new(index, nil)
     end
 
     def separate(sep)

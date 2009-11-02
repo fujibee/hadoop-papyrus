@@ -6,23 +6,19 @@ include HadoopDsl::LogAnalysis
 
 describe LogAnalysisMapper do
   it 'should separate data by space' do
-    pending 'should move to model test. can inspect inner variable by tokui methods'
-
     value = 'Lorem ipsum dolor sit amet,'
     mapper = LogAnalysisMapper.new(nil, nil, value)
     mapper.separate(' ')
 
-    mapper.column(1).size.should == 5
+    mapper.column(1).text.should == 'ipsum'
   end
 
   it 'should separate by pattern' do
-    pending 'should move to model test'
-
     value = '127.0.0.1 - frank [10/Oct/2000:13:55:36 -0700] "GET /apache_pb.gif HTTP/1.0" 200 2326'
     mapper = LogAnalysisMapper.new(nil, nil, value)
     mapper.pattern /(.*) (.*) (.*) \[(.*)\] (".*") (\d*) (\d*)/
 
-    mapper.column.size.should == 7
+    mapper.column(2).text.should == 'frank'
   end
 
   it 'should count uniq column' do
