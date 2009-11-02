@@ -6,17 +6,21 @@ include HadoopDsl::LogAnalysis
 
 describe LogAnalysisMapper do
   it 'should separate data by space' do
+    pending 'should move to model test. can inspect inner variable by tokui methods'
+
     value = 'Lorem ipsum dolor sit amet,'
     mapper = LogAnalysisMapper.new(nil, nil, value)
-    mapper.data.separate(' ')
+    mapper.separate(' ')
 
-    mapper.column.size.should == 5
+    mapper.column(1).size.should == 5
   end
 
   it 'should separate by pattern' do
+    pending 'should move to model test'
+
     value = '127.0.0.1 - frank [10/Oct/2000:13:55:36 -0700] "GET /apache_pb.gif HTTP/1.0" 200 2326'
     mapper = LogAnalysisMapper.new(nil, nil, value)
-    mapper.data.pattern /(.*) (.*) (.*) \[(.*)\] (".*") (\d*) (\d*)/
+    mapper.pattern /(.*) (.*) (.*) \[(.*)\] (".*") (\d*) (\d*)/
 
     mapper.column.size.should == 7
   end
@@ -24,8 +28,8 @@ describe LogAnalysisMapper do
   it 'should count uniq column' do
     value = 'count uniq'
     mapper = LogAnalysisMapper.new(nil, nil, value)
-    mapper.data.separate(' ')
-    mapper.column[1].count_uniq
+    mapper.separate(' ')
+    mapper.column(1) { mapper.count_uniq }
 
     mapper.emitted.first["col1\tuniq"].should == 1
   end
@@ -33,8 +37,8 @@ describe LogAnalysisMapper do
   it 'should sum column value' do
     value = 'sum 123'
     mapper = LogAnalysisMapper.new(nil, nil, value)
-    mapper.data.separate(' ')
-    mapper.column[1].sum
+    mapper.separate(' ')
+    mapper.column(1) { mapper.sum }
 
     mapper.emitted.first["col1"].should == 123
   end
@@ -46,15 +50,15 @@ describe LogAnalysisReducer do
     values = [1, 1, 1]
     reducer = LogAnalysisReducer.new(nil, key, values)
 
-    reducer.column[1].should_not be_nil
+    reducer.column(1).key.should_not be_nil
   end
 
   it 'should count uniq column' do
     key = "col1\tuniq"
     values = [1, 1, 1]
     reducer = LogAnalysisReducer.new(nil, key, values)
-    reducer.data.separate(' ')
-    reducer.column[1].count_uniq
+    reducer.separate(' ')
+    reducer.column(1) { reducer.count_uniq }
 
     reducer.emitted.first["col1\tuniq"].should == 3
   end
@@ -63,18 +67,18 @@ describe LogAnalysisReducer do
     key = "col2\tuniq"
     values = [1, 1, 1]
     reducer = LogAnalysisReducer.new(nil, key, values)
-    reducer.data.separate(' ')
-    reducer.column[1].count_uniq
+    reducer.separate(' ')
+    reducer.column(1) { reducer.count_uniq }
 
-    reducer.emitted.first.should be_nil
+    reducer.emitted.first['col1'].should be_nil
   end
 
   it 'should sum column value' do
     key = "col1\tuniq"
     values = [123, 456, 789]
     reducer = LogAnalysisReducer.new(nil, key, values)
-    reducer.data.separate(' ')
-    reducer.column[1].sum
+    reducer.separate(' ')
+    reducer.column(1) { reducer.sum }
 
     reducer.emitted.first["col1\tuniq"].should == 123+456+789
   end

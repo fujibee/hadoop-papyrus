@@ -12,10 +12,12 @@ module HadoopDsl::LogAnalysis
     def initialize(script, key, value)
       super(script, LogAnalysisMapperModel.new(key, value))
     end
-    
-    # model keywords
-    def data; @model end
-    def column; @model.column end
+
+    # entry point
+    def data(description = '', &block) yield end
+
+    # model methods
+    def_delegators :@model, :separate, :pattern, :column, :count_uniq, :sum
   end
 
   class LogAnalysisReducer < BaseReducer
@@ -23,88 +25,90 @@ module HadoopDsl::LogAnalysis
       super(script, LogAnalysisReducerModel.new(key, values))
     end
 
-    # model keywords
-    def data; @model end
-    def column; @model.column end
+    # entry point
+    def data(description = '', &block) yield end
+
+    # model methods
+    def_delegators :@model, :separate, :pattern, :column, :count_uniq, :sum
   end
 
   # model
   class LogAnalysisMapperModel < BaseMapperModel
-    attr_reader :column
-
     def initialize(key, value)
       super(key, value)
-      @column = []
+      @columns = []
+    end
+
+    def column(index, &block)
+      @current = @columns[index]
+      yield
     end
 
     def separate(sep)
       parts = @value.split(sep)
-      @column = parts.enum_for(:each_with_index).map {|p, i| Column.new(self, i, p)}
+      @columns = parts.enum_for(:each_with_index).map {|p, i| Column.new(i, p)}
     end
 
     def pattern(re)
       if @value =~ re
         md = Regexp.last_match
-        @column = md.captures.enum_for(:each_with_index).map {|p, i| Column.new(self, i, p)}
+        @columns = md.captures.enum_for(:each_with_index).map {|p, i| Column.new(i, p)}
       end
     end
 
+    def count_uniq
+      @controller.emit([PREFIX, @current.index, KEY_SEP, @current.text].join => 1)
+    end
+
+    def sum
+      @controller.emit([PREFIX, @current.index].join => @current.text.to_i)
+    end
+
     class Column
-      def initialize(parent, index, text = nil)
-        @parent, @index, @text = parent, index, text
-      end
+      attr_reader :index, :text
 
-      def count_uniq
-        @parent.controller.emit([PREFIX, @index, KEY_SEP, @text].join => 1)
-      end
-
-      def sum
-        @parent.controller.emit([PREFIX, @index].join => @text.to_i)
+      def initialize(index, text = nil)
+        @index, @text = index, text
       end
     end
   end
 
   class LogAnalysisReducerModel < BaseReducerModel
-    attr_reader :column
-
     def initialize(key, values)
       super(key, values)
 
-      @column = ColumnArray.new(self)
+      @columns = []
       if key =~ /#{PREFIX}(\d+)#{KEY_SEP}?(.*)/
         index = $1.to_i
-        @column[index] = Column.new(self, key, values)
+        @columns[index] = Column.new(key, values)
       end
     end
 
-    class ColumnArray < ::Array
-      def initialize(parent)
-        super()
-        @parent = parent
-      end
+    def column(index, &block)
+      @current = @columns[index]
+      yield if block_given?
+      @current || Column.new(PREFIX + index.to_s, nil)
+    end
 
-      def [](index)
-        at(index) ? at(index) : @parent
-      end
+    def count_uniq
+      @controller.emit(@key => sum_values)
+    end
+
+    def sum
+      @controller.emit(@key => sum_values)
+    end
+
+    private
+
+    def sum_values
+      @values.inject {|ret, i| ret + i}
     end
 
     class Column
-      def initialize(parent, key, values)
-        @parent, @key, @values = parent, key, values
-      end
-
-      def count_uniq
-        @parent.controller.emit(@key => sum_values)
-      end
-
-      def sum
-        @parent.controller.emit(@key => sum_values)
-      end
-
-      private
-
-      def sum_values
-        @values.inject {|ret, i| ret + i}
+      attr_reader :key, :values
+      
+      def initialize(key, values)
+        @key, @values = key, values
       end
     end
   end

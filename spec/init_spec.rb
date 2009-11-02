@@ -11,8 +11,12 @@ describe 'mapreduce init' do
   before(:all) do
     @script = create_tmp_script(<<-EOF)
 use 'LogAnalysis'
-data.separate(" ")
-column[2].count_uniq
+data 'test' do
+  separate(" ")
+  column 2 do
+    count_uniq
+  end
+end
     EOF
   end
 

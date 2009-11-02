@@ -1,8 +1,11 @@
 require 'util'
+require 'forwardable'
 
 module HadoopDsl
   # controller
   class BaseMapRed
+    extend Forwardable
+
     attr_reader :emitted
 
     def initialize(script, model)
