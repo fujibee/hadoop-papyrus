@@ -44,5 +44,4 @@ end
 
     reduce(@script, key, values, @output, nil)
   end
-
 end

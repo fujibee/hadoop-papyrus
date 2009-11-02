@@ -18,9 +18,7 @@ module HadoopDsl
       eval(read_file(@script), binding, @script)
     end
 
-    def emit(hash)
-      @emitted << hash
-    end
+    def emit(hash) @emitted << hash end
 
     # all DSL statements without def is processed here
     def method_missing(method_name, *args) self end

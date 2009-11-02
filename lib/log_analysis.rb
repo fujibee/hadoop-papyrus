@@ -6,6 +6,13 @@ module HadoopDsl::LogAnalysis
   
   KEY_SEP = "\t"
   PREFIX = 'col'
+  AVAILABLE_METHODS = [:separate, :pattern, :column, :count_uniq, :sum]
+
+  # common
+  module LogAnalysisMapRed
+    # entry point
+    def data(description = '', &block) yield end
+  end
 
   # controller
   class LogAnalysisMapper < BaseMapper
@@ -13,11 +20,10 @@ module HadoopDsl::LogAnalysis
       super(script, LogAnalysisMapperModel.new(key, value))
     end
 
-    # entry point
-    def data(description = '', &block) yield end
+    include LogAnalysisMapRed
 
     # model methods
-    def_delegators :@model, :separate, :pattern, :column, :count_uniq, :sum
+    def_delegators :@model, *AVAILABLE_METHODS
   end
 
   class LogAnalysisReducer < BaseReducer
@@ -25,11 +31,10 @@ module HadoopDsl::LogAnalysis
       super(script, LogAnalysisReducerModel.new(key, values))
     end
 
-    # entry point
-    def data(description = '', &block) yield end
+    include LogAnalysisMapRed
 
     # model methods
-    def_delegators :@model, :separate, :pattern, :column, :count_uniq, :sum
+    def_delegators :@model, *AVAILABLE_METHODS
   end
 
   # model
