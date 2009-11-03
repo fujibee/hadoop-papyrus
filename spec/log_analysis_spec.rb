@@ -5,6 +5,10 @@ require 'log_analysis'
 include HadoopDsl::LogAnalysis
 
 describe LogAnalysisMapper do
+  before do
+    @apache_log = '127.0.0.1 - frank [10/Oct/2000:13:55:36 -0700] "GET /apache_pb.gif HTTP/1.0" 200 2326'
+  end
+  
   it 'should separate data by space' do
     value = 'Lorem ipsum dolor sit amet,'
     mapper = LogAnalysisMapper.new(nil, nil, value)
@@ -14,12 +18,28 @@ describe LogAnalysisMapper do
   end
 
   it 'should separate by pattern' do
-    value = '127.0.0.1 - frank [10/Oct/2000:13:55:36 -0700] "GET /apache_pb.gif HTTP/1.0" 200 2326'
-    mapper = LogAnalysisMapper.new(nil, nil, value)
+    mapper = LogAnalysisMapper.new(nil, nil, @apache_log)
     mapper.pattern /(.*) (.*) (.*) \[(.*)\] (".*") (\d*) (\d*)/
 
     mapper.column(2).text.should == 'frank'
   end
+
+  it 'should label column name by string' do
+    mapper = LogAnalysisMapper.new(nil, nil, @apache_log)
+    mapper.pattern /(.*) (.*) (.*) \[(.*)\] (".*") (\d*) (\d*)/
+    mapper.column_name 'remote_host', PASS, 'user', 'access_date', 'request', 'status', 'bytes'
+
+    mapper.column('user').text.should == 'frank'
+  end
+
+  it 'should label column name by symbol' do
+    mapper = LogAnalysisMapper.new(nil, nil, @apache_log)
+    mapper.pattern /(.*) (.*) (.*) \[(.*)\] (".*") (\d*) (\d*)/
+    mapper.column_name :remote_host, PASS, :user, :access_date, :request, :status, :bytes
+
+    mapper.column(:user).text.should == 'frank'
+  end
+
 
   it 'should count uniq column' do
     value = 'count uniq'

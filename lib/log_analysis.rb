@@ -6,7 +6,8 @@ module HadoopDsl::LogAnalysis
   
   KEY_SEP = "\t"
   PREFIX = 'col'
-  AVAILABLE_METHODS = [:separate, :pattern, :column, :count_uniq, :sum]
+  PASS = nil
+  AVAILABLE_METHODS = [:separate, :pattern, :column_name, :column, :count_uniq, :sum]
 
   # common
   module LogAnalysisMapRed
@@ -41,13 +42,18 @@ module HadoopDsl::LogAnalysis
   class LogAnalysisMapperModel < BaseMapperModel
     def initialize(key, value)
       super(key, value)
-      @columns = []
+      @columns = []; @column_names = []
     end
 
-    def column(index, &block)
-      @current = @columns[index]
+    def column(key, &block)
+      index = case key
+              when Integer then key
+              when Symbol then @column_names.index(key)
+              when String then @column_names.index(key.to_sym)
+              end
+      @current = @columns[index] if index
       yield if block_given?
-      @current || Column.new(index, nil)
+      @current
     end
 
     def separate(sep)
@@ -60,6 +66,11 @@ module HadoopDsl::LogAnalysis
         md = Regexp.last_match
         @columns = md.captures.enum_for(:each_with_index).map {|p, i| Column.new(i, p)}
       end
+    end
+
+    # column names by String converted to Symbol
+    def column_name(*names)
+      @column_names = names.map {|name| name.is_a?(String) ? name.to_sym : name }
     end
 
     def count_uniq
