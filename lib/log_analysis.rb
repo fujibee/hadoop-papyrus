@@ -59,31 +59,27 @@ module HadoopDsl::LogAnalysis
 
     def separate(sep)
       parts = @value.split(sep)
-      @columns = parts.enum_for(:each_with_index).map do |p, i|
-        column = @columns[i] ? @columns[i] : Column.new(i)
-        column.value = p
-        column
-      end
+      create_or_replace_columns_with(parts) {|column, value| column.value = value}
     end
 
     def pattern(re)
       if @value =~ re
         md = Regexp.last_match
-        @columns = md.captures.enum_for(:each_with_index).map do |p, i|
-        column = @columns[i] ? @columns[i] : Column.new(i)
-        column.value = p
-        column
-        end
+        create_or_replace_columns_with(md.captures) {|column, value| column.value = value}
       end
     end
 
     # column names by String converted to Symbol
     def column_name(*names)
-      column_names = names.map {|name| name.is_a?(String) ? name.to_sym : name }
-      @columns = column_names.enum_for(:each_with_index).map do |p, i|
-        column = @columns[i] ? @columns[i] : Column.new(i)
-        column.name = p
-        column
+      sym_names = names.map {|name| name.is_a?(String) ? name.to_sym : name }
+      create_or_replace_columns_with(sym_names) {|column, name| column.name = name}
+    end
+
+    def create_or_replace_columns_with(array, &block)
+      @columns = array.enum_for(:each_with_index).map do |p, i|
+        c = @columns[i] ? @columns[i] : Column.new(i)
+        yield c, p
+        c
       end
     end
 
