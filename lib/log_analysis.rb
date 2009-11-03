@@ -7,7 +7,7 @@ module HadoopDsl::LogAnalysis
   KEY_SEP = "\t"
   PREFIX = 'col'
   PASS = nil
-  AVAILABLE_METHODS = [:separate, :pattern, :column_name, :column, :count_uniq, :sum]
+  AVAILABLE_METHODS = [:separate, :pattern, :column_name, :column, :value, :count_uniq, :sum]
 
   # common
   module LogAnalysisMapRed
@@ -42,50 +42,66 @@ module HadoopDsl::LogAnalysis
   class LogAnalysisMapperModel < BaseMapperModel
     def initialize(key, value)
       super(key, value)
-      @columns = []; @column_names = []
+      @columns = []
     end
 
     def column(key, &block)
-      index = case key
-              when Integer then key
-              when Symbol then @column_names.index(key)
-              when String then @column_names.index(key.to_sym)
+      @current = case key
+              when Integer then @columns[key]
+              when Symbol then (@columns.select {|c| c.name == key}).first
+              when String then (@columns.select {|c| c.name == key.to_sym}).first
               end
-      @current = @columns[index] if index
       yield if block_given?
       @current
     end
 
+    def value; @current.value end
+
     def separate(sep)
       parts = @value.split(sep)
-      @columns = parts.enum_for(:each_with_index).map {|p, i| Column.new(i, p)}
+      @columns = parts.enum_for(:each_with_index).map do |p, i|
+        column = @columns[i] ? @columns[i] : Column.new(i)
+        column.value = p
+        column
+      end
     end
 
     def pattern(re)
       if @value =~ re
         md = Regexp.last_match
-        @columns = md.captures.enum_for(:each_with_index).map {|p, i| Column.new(i, p)}
+        @columns = md.captures.enum_for(:each_with_index).map do |p, i|
+        column = @columns[i] ? @columns[i] : Column.new(i)
+        column.value = p
+        column
+        end
       end
     end
 
     # column names by String converted to Symbol
     def column_name(*names)
-      @column_names = names.map {|name| name.is_a?(String) ? name.to_sym : name }
+      column_names = names.map {|name| name.is_a?(String) ? name.to_sym : name }
+      @columns = column_names.enum_for(:each_with_index).map do |p, i|
+        column = @columns[i] ? @columns[i] : Column.new(i)
+        column.name = p
+        column
+      end
     end
 
+    # emitters
     def count_uniq
-      @controller.emit([PREFIX, @current.index, KEY_SEP, @current.text].join => 1)
+      @controller.emit([PREFIX, @current.index, KEY_SEP, @current.value].join => 1)
     end
 
     def sum
-      @controller.emit([PREFIX, @current.index].join => @current.text.to_i)
+      @controller.emit([PREFIX, @current.index].join => @current.value.to_i)
     end
 
     class Column
-      attr_reader :index, :text
+      attr_reader :index
+      attr_accessor :value, :name
 
-      def initialize(index, text = nil)
-        @index, @text = index, text
+      def initialize(index, value = nil)
+        @index, @value = index, value
       end
     end
   end

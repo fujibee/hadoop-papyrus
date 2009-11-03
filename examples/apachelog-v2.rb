@@ -10,7 +10,7 @@ data do
 
   column :access_date do
     date = Date.new(value) # valueという変数にカラム値が入る
-    classify date, :range => MONTHLY # 月別に分ける
+    select date, :range => MONTHLY # 月別に分ける
     count_uniq
   end
 

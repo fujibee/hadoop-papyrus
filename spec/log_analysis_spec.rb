@@ -14,14 +14,14 @@ describe LogAnalysisMapper do
     mapper = LogAnalysisMapper.new(nil, nil, value)
     mapper.separate(' ')
 
-    mapper.column(1).text.should == 'ipsum'
+    mapper.column(1).value.should == 'ipsum'
   end
 
   it 'should separate by pattern' do
     mapper = LogAnalysisMapper.new(nil, nil, @apache_log)
     mapper.pattern /(.*) (.*) (.*) \[(.*)\] (".*") (\d*) (\d*)/
 
-    mapper.column(2).text.should == 'frank'
+    mapper.column(2).value.should == 'frank'
   end
 
   it 'should label column name by string' do
@@ -29,7 +29,7 @@ describe LogAnalysisMapper do
     mapper.pattern /(.*) (.*) (.*) \[(.*)\] (".*") (\d*) (\d*)/
     mapper.column_name 'remote_host', PASS, 'user', 'access_date', 'request', 'status', 'bytes'
 
-    mapper.column('user').text.should == 'frank'
+    mapper.column('user').value.should == 'frank'
   end
 
   it 'should label column name by symbol' do
@@ -37,9 +37,8 @@ describe LogAnalysisMapper do
     mapper.pattern /(.*) (.*) (.*) \[(.*)\] (".*") (\d*) (\d*)/
     mapper.column_name :remote_host, PASS, :user, :access_date, :request, :status, :bytes
 
-    mapper.column(:user).text.should == 'frank'
+    mapper.column(:user).value.should == 'frank'
   end
-
 
   it 'should count uniq column' do
     value = 'count uniq'
@@ -57,6 +56,15 @@ describe LogAnalysisMapper do
     mapper.column(1) { mapper.sum }
 
     mapper.emitted.first["col1"].should == 123
+  end
+
+  it 'should return current column value' do
+    value = 'Lorem ipsum dolor sit amet,'
+    mapper = LogAnalysisMapper.new(nil, nil, value)
+    mapper.separate(' ')
+    mapper.column(1) do 
+      mapper.value.should == 'ipsum'
+    end
   end
 end
 
