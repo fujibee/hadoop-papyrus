@@ -13,8 +13,9 @@ describe 'mapreduce init' do
 use 'LogAnalysis'
 data 'test' do
   separate(" ")
-  column 2 do
-    count_uniq
+  column_name 'c0', 'c1', 'c2', 'c3'
+  topic 't1' do
+    count_uniq columns(:c1)
   end
 end
     EOF
@@ -37,7 +38,7 @@ end
 
   it 'can reduce sucessfully' do
     key = Text.new
-    key.set("col2\tkey")
+    key.set("t1\tkey")
     value = Text.new
     values = [@one, @one, @one]
     @output.should_receive(:collect).once #.with(@text, @one)

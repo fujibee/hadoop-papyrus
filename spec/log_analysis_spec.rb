@@ -44,66 +44,76 @@ describe LogAnalysisMapper do
     value = 'count uniq'
     mapper = LogAnalysisMapper.new(nil, nil, value)
     mapper.separate(' ')
-    mapper.column(1) { mapper.count_uniq }
+    mapper.topic('t1') { mapper.count_uniq mapper.column(1) }
 
-    mapper.emitted.first["col1\tuniq"].should == 1
+    mapper.emitted.first["t1\tuniq"].should == 1
   end
 
   it 'should sum column value' do
     value = 'sum 123'
     mapper = LogAnalysisMapper.new(nil, nil, value)
     mapper.separate(' ')
-    mapper.column(1) { mapper.sum }
+    mapper.topic('t1') { mapper.sum mapper.column(1) }
 
-    mapper.emitted.first["col1"].should == 123
+    mapper.emitted.first["t1"].should == 123
   end
 
-  it 'should return current column value' do
+  it 'has topic which returns label' do
     value = 'Lorem ipsum dolor sit amet,'
     mapper = LogAnalysisMapper.new(nil, nil, value)
     mapper.separate(' ')
-    mapper.column(1) do 
-      mapper.value.should == 'ipsum'
-    end
+
+    topic = mapper.topic('desc', :label => 'label')
+    topic.label.should == 'label'
+  end
+  
+  it 'has topic which returns label as desc' do
+    value = 'Lorem ipsum dolor sit amet,'
+    mapper = LogAnalysisMapper.new(nil, nil, value)
+    mapper.separate(' ')
+
+    topic = mapper.topic('desc')
+    topic.label.should == 'desc'
+  end
+
+  it 'has topic which returns label as desc with space' do
+    value = 'Lorem ipsum dolor sit amet,'
+    mapper = LogAnalysisMapper.new(nil, nil, value)
+    mapper.separate(' ')
+
+    topic = mapper.topic('desc with space')
+    topic.label.should == 'desc_with_space'
   end
 end
 
 describe LogAnalysisReducer do
-  it 'should create column properly' do
-    key = "col1\tuniq"
-    values = [1, 1, 1]
-    reducer = LogAnalysisReducer.new(nil, key, values)
-
-    reducer.column(1).key.should_not be_nil
-  end
-
-  it 'should count uniq column' do
-    key = "col1\tuniq"
+  it 'should count uniq in the topic' do
+    key = "t1\tuniq"
     values = [1, 1, 1]
     reducer = LogAnalysisReducer.new(nil, key, values)
     reducer.separate(' ')
-    reducer.column(1) { reducer.count_uniq }
+    reducer.topic('t1') { reducer.count_uniq(nil) }
 
-    reducer.emitted.first["col1\tuniq"].should == 3
+    reducer.emitted.first["t1\tuniq"].should == 3
   end
 
-  it 'should not count uniq of other column' do
-    key = "col2\tuniq"
+  it 'should not count uniq of other topic' do
+    key = "t2\tuniq"
     values = [1, 1, 1]
     reducer = LogAnalysisReducer.new(nil, key, values)
     reducer.separate(' ')
-    reducer.column(1) { reducer.count_uniq }
+    reducer.topic('t1') { reducer.count_uniq(nil) }
 
-    reducer.emitted.first['col1'].should be_nil
+    reducer.emitted.first.should be_nil
   end
 
   it 'should sum column value' do
-    key = "col1\tuniq"
+    key = "t1"
     values = [123, 456, 789]
     reducer = LogAnalysisReducer.new(nil, key, values)
     reducer.separate(' ')
-    reducer.column(1) { reducer.sum }
+    reducer.topic('t1') { reducer.sum(nil) }
 
-    reducer.emitted.first["col1\tuniq"].should == 123+456+789
+    reducer.emitted.first["t1"].should == 123+456+789
   end
 end

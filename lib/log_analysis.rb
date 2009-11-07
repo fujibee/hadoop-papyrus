@@ -7,7 +7,7 @@ module HadoopDsl::LogAnalysis
   KEY_SEP = "\t"
   PREFIX = 'col'
   PASS = nil
-  AVAILABLE_METHODS = [:separate, :pattern, :column_name, :column, :value, :count_uniq, :sum]
+  AVAILABLE_METHODS = [:separate, :pattern, :column_name, :column, :topic, :value, :count_uniq, :sum]
 
   # common
   module LogAnalysisMapRed
@@ -42,20 +42,24 @@ module HadoopDsl::LogAnalysis
   class LogAnalysisMapperModel < BaseMapperModel
     def initialize(key, value)
       super(key, value)
-      @columns = []
+      @columns, @topics = [], []
     end
 
     def column(key, &block)
-      @current = case key
+      current = case key
               when Integer then @columns[key]
               when Symbol then (@columns.select {|c| c.name == key}).first
               when String then (@columns.select {|c| c.name == key.to_sym}).first
               end
       yield if block_given?
-      @current
+      current
     end
 
-    def value; @current.value end
+    def topic(desc, options = {}, &block)
+      @topics << @current_topic = Topic.new(desc, options[:label])
+      yield if block_given?
+      @current_topic
+    end
 
     def separate(sep)
       parts = @value.split(sep)
@@ -84,12 +88,12 @@ module HadoopDsl::LogAnalysis
     end
 
     # emitters
-    def count_uniq
-      @controller.emit([PREFIX, @current.index, KEY_SEP, @current.value].join => 1)
+    def count_uniq(column)
+      @controller.emit([@current_topic.label, KEY_SEP, column.value].join => 1)
     end
 
-    def sum
-      @controller.emit([PREFIX, @current.index].join => @current.value.to_i)
+    def sum(column)
+      @controller.emit([@current_topic.label].join => column.value.to_i)
     end
 
     class Column
@@ -100,31 +104,38 @@ module HadoopDsl::LogAnalysis
         @index, @value = index, value
       end
     end
+
+    class Topic
+      def initialize(desc, label = nil)
+        @desc, @label = desc, label
+      end
+
+      def label
+        @label || @desc.gsub(/\s/, '_')
+      end
+    end
   end
 
   class LogAnalysisReducerModel < BaseReducerModel
     def initialize(key, values)
       super(key, values)
-
-      @columns = []
-      if key =~ /#{PREFIX}(\d+)#{KEY_SEP}?(.*)/
-        index = $1.to_i
-        @columns[index] = Column.new(key, values)
+      if key =~ /(\w*)#{KEY_SEP}?(.*)/
+        @topic = Topic.new($1, values)
       end
     end
 
-    def column(index, &block)
-      @current = @columns[index]
+    def topic(desc, options = {}, &block)
+      @current_topic = Topic.new(options[:label] || desc.gsub(/\s/, '_'), nil)
       yield if block_given?
-      @current || Column.new(PREFIX + index.to_s, nil)
+      @current_topic
     end
 
-    def count_uniq
-      @controller.emit(@key => sum_values)
+    def count_uniq(column)
+      @controller.emit(@key => sum_values) if @topic == @current_topic
     end
 
-    def sum
-      @controller.emit(@key => sum_values)
+    def sum(column)
+      @controller.emit(@key => sum_values) if @topic == @current_topic
     end
 
     private
@@ -133,12 +144,14 @@ module HadoopDsl::LogAnalysis
       @values.inject {|ret, i| ret + i}
     end
 
-    class Column
-      attr_reader :key, :values
+    class Topic
+      attr_reader :label, :values
       
-      def initialize(key, values)
-        @key, @values = key, values
+      def initialize(label, values)
+        @label, @values = label, values
       end
+
+      def ==(rh) self.label == rh.label end
     end
   end
 end
