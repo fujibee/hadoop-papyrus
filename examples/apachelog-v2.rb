@@ -1,21 +1,25 @@
 use 'LogAnalysis'
 
-data do
-  pattern /(.*) (.*) (.*) \[(.*)\] (".*") (\d*) (\d*)/
-  column_name 'remote_host', PASS, 'user', 'access_date', 'request', 'status', 'bytes' # 各カラムにラベルをつける
+data 'apache log on test1' do
+  from 'apachlog/inputs'
+  to 'apachlog/outputs'
 
-  column :user do
-    count_uniq # デフォルトのカラムの値
-  end
+  each_line do
+    pattern /(.*) (.*) (.*) \[(.*)\] (".*") (\d*) (\d*)/
+    column_name 'remote_host', PASS, 'user', 'access_date', 'request', 'status', 'bytes' # 各カラムにラベルをつける
 
-  column :access_date do
-    date = Date.new(value) # valueという変数にカラム値が入る
-    select date, :range => MONTHLY # 月別に分ける
-    count_uniq
-  end
+    topic 'which users?', :label => 'user' do
+      count_uniq column[:user]
+    end
 
-  column :bytes do
-    to_kilobytes # / 1024
-    sum
+    topic 'access date by monthly' do
+      select_date column[:access_date], BY_MONTHLY
+      count column[:access_date]
+    end
+
+    topic 'total bytes' do
+      select_date column[:access_date], BY_MONTHLY
+      sum column[:bytes].to_kilobytes # / 1024
+    end
   end
 end
