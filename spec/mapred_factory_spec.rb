@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/spec_helper'
+require File.join(File.dirname(__FILE__) , 'spec_helper')
 
 require 'mapred_factory'
 require 'log_analysis'

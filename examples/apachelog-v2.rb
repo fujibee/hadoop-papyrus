@@ -12,14 +12,14 @@ data 'apache log on test1' do
       count_uniq column[:user]
     end
 
-    topic 'access date by monthly' do
-      select_date column[:access_date], BY_MONTHLY
-      count column[:access_date]
-    end
-
-    topic 'total bytes' do
-      select_date column[:access_date], BY_MONTHLY
-      sum column[:bytes].to_kilobytes # / 1024
-    end
+#    topic 'access date by monthly' do
+#      select_date column[:access_date], BY_MONTHLY
+#      count column[:access_date]
+#    end
+#
+#    topic 'total bytes' do
+#      select_date column[:access_date], BY_MONTHLY
+#      sum column[:bytes].to_kilobytes # / 1024
+#    end
   end
 end

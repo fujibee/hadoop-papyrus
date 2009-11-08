@@ -13,6 +13,8 @@ module HadoopDsl::LogAnalysis
   module LogAnalysisMapRed
     # entry point
     def data(description = '', &block) yield end
+
+    def each_line(&block) yield end
   end
 
   # controller
