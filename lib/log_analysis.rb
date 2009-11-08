@@ -42,18 +42,11 @@ module HadoopDsl::LogAnalysis
   class LogAnalysisMapperModel < BaseMapperModel
     def initialize(key, value)
       super(key, value)
-      @columns, @topics = [], []
+      @columns = ColumnArray.new
+      @topics = []
     end
 
-    def column(key, &block)
-      current = case key
-              when Integer then @columns[key]
-              when Symbol then (@columns.select {|c| c.name == key}).first
-              when String then (@columns.select {|c| c.name == key.to_sym}).first
-              end
-      yield if block_given?
-      current
-    end
+    def column; @columns end
 
     def topic(desc, options = {}, &block)
       @topics << @current_topic = Topic.new(desc, options[:label])
@@ -80,11 +73,12 @@ module HadoopDsl::LogAnalysis
     end
 
     def create_or_replace_columns_with(array, &block)
-      @columns = array.enum_for(:each_with_index).map do |p, i|
+      columns = array.enum_for(:each_with_index).map do |p, i|
         c = @columns[i] ? @columns[i] : Column.new(i)
         yield c, p
         c
       end
+      @columns = ColumnArray.new(columns)
     end
 
     # emitters
@@ -94,6 +88,16 @@ module HadoopDsl::LogAnalysis
 
     def sum(column)
       @controller.emit([@current_topic.label].join => column.value.to_i)
+    end
+
+    class ColumnArray < Array
+      def [](key)
+        case key
+        when Integer then at(key)
+        when Symbol then (select {|c| c.name == key}).first
+        when String then (select {|c| c.name == key.to_sym}).first
+        end
+      end
     end
 
     class Column
