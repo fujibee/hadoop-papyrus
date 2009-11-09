@@ -147,7 +147,7 @@ module HadoopDsl::LogAnalysis
     private
 
     def sum_values
-      @values.inject {|ret, i| ret + i}
+      @topic.values.inject {|ret, i| ret + i}
     end
 
     class Topic

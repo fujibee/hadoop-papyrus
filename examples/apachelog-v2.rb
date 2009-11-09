@@ -6,7 +6,7 @@ data 'apache log on test1' do
 
   each_line do
     pattern /(.*) (.*) (.*) \[(.*)\] (".*") (\d*) (\d*)/
-    column_name 'remote_host', PASS, 'user', 'access_date', 'request', 'status', 'bytes' # 各カラムにラベルをつける
+    column_name 'remote_host', 'pass', 'user', 'access_date', 'request', 'status', 'bytes' # 各カラムにラベルをつける
 
     topic 'which users?', :label => 'user' do
       count_uniq column[:user]
