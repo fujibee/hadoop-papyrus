@@ -9,7 +9,7 @@ data 'apache log on test2' do
 
   each_line do
     pattern /(.*) (.*) (.*) \[(.*)\] (".*") (\d*) (\d*) (.*) "(.*)"/
-    column_name 'remote_host', 'pass', 'user', 'access_date', 'request', 'status', 'bytes', '', 'ua'
+    column_name 'remote_host', 'pass', 'user', 'access_date', 'request', 'status', 'bytes', 'pass', 'ua'
 
     topic 'ua counts', :label => 'ua' do
       count_uniq column[:ua]
