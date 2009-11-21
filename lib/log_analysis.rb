@@ -137,17 +137,11 @@ module HadoopDsl::LogAnalysis
     end
 
     def count_uniq(column)
-      @controller.emit(@key => sum_values) if @topic == @current_topic
+      aggregate if @topic == @current_topic
     end
 
     def sum(column)
-      @controller.emit(@key => sum_values) if @topic == @current_topic
-    end
-
-    private
-
-    def sum_values
-      @topic.values.inject {|ret, i| ret + i}
+      aggregate if @topic == @current_topic
     end
 
     class Topic

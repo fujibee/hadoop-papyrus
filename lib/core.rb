@@ -50,6 +50,11 @@ module HadoopDsl
     def initialize(key, value)
       @key, @value = key, value
     end
+
+    # common functions
+    def identity
+      @controller.emit(@key => @value)
+    end
   end
 
   class BaseReducerModel < BaseModel
@@ -57,6 +62,11 @@ module HadoopDsl
 
     def initialize(key, values)
       @key, @values = key, values
+    end
+
+    # common functions
+    def aggregate
+      @controller.emit(@key => @values.inject {|ret, i| ret + i})
     end
   end
 end
