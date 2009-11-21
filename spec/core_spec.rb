@@ -25,4 +25,24 @@ describe 'BaseMapRed' do
     reducer = BaseReducer.new(@script, model)
     reducer.run
   end
+
+  describe BaseMapper do
+    it 'can emit as identity' do
+      model = BaseMapperModel.new('key', 'value')
+      mapper = BaseMapper.new(@script, model)
+      model.identity
+
+      mapper.emitted.should == [{'key' => 'value'}] 
+    end
+  end
+
+  describe BaseReducer do
+    it 'can emit as aggregate' do
+      model = BaseReducerModel.new('key', [1, 2, 3])
+      reducer = BaseReducer.new(@script, model)
+      model.aggregate
+
+      reducer.emitted.should == [{'key' => 6}] 
+    end
+  end
 end
