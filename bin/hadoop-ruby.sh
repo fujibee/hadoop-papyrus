@@ -1,8 +1,14 @@
-HADOOP=$HADOOP_HOME/bin/hadoop 
-LIB_DIR=lib
+BIN_DIR=`dirname "$0"`
+BASE_DIR=`cd $BIN_DIR/..; pwd`
 
-for x in `ls $LIB_DIR`; do
-  DSL_FILES=$LIB_DIR/$x,$DSL_FILES
+HADOOP=$HADOOP_HOME/bin/hadoop 
+if [ ! -f $HADOOP ]; then
+  HADOOP=$BIN_DIR/hadoop
+fi
+HADOOP_RUBY_LIB_DIR=$BASE_DIR/lib
+
+for x in `ls $HADOOP_RUBY_LIB_DIR`; do
+  DSL_FILES=$HADOOP_RUBY_LIB_DIR/$x,$DSL_FILES
 done
 DSL_FILES=$DSL_FILES$1
 
