@@ -1,3 +1,4 @@
+#!/bin/bash -x
 BIN_DIR=`dirname "$0"`
 BASE_DIR=`cd $BIN_DIR/..; pwd`
 
@@ -5,7 +6,7 @@ BASE_DIR=`cd $BIN_DIR/..; pwd`
 HADOOP=$HADOOP_HOME/bin/hadoop 
 if [ ! -f $HADOOP ]; then
   HADOOP=$BIN_DIR/hadoop
-  HADOOP_OPTS="-conf conf/hadoop-site.xml"
+  HADOOP_OPTS="--config $BASE_DIR/conf"
 fi
 
 # fetch jruby jar if not exist
@@ -25,4 +26,4 @@ DSL_FILES=$DSL_FILES$1
 
 # execute hadoop ruby
 echo runnig $1...
-$HADOOP jar $HADOOP_OPTS $LIB_DIR/hadoop-ruby.jar org.apache.hadoop.ruby.JRubyJobRunner -libjars $LIB_DIR/$JRUBY_JAR -files $DSL_FILES $1 $2 $3
+$HADOOP $HADOOP_OPTS jar $LIB_DIR/hadoop-ruby.jar org.apache.hadoop.ruby.JRubyJobRunner -libjars $LIB_DIR/$JRUBY_JAR -files $DSL_FILES $1 $2 $3
