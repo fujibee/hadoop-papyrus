@@ -7,20 +7,18 @@ import 'org.apache.hadoop.io.Text'
 
 include HadoopDsl
 
-def map(script, key, value, output, reporter)
+def map(key, value, output, reporter, script)
   mapper = MapperFactory.create(script, key.to_string, value.to_string)
   mapper.run
 
-#  reporter.status = mapper.emitted.inspect
   write(output, mapper)
 end
 
-def reduce(script, key, values, output, reporter)
+def reduce(key, values, output, reporter, script)
   ruby_values = values.map {|v| v.get}
   reducer = ReducerFactory.create(script, key.to_string, ruby_values)
   reducer.run
 
-#  reporter.status = reducer.emitted.inspect
   write(output, reducer)
 end
 

@@ -33,7 +33,7 @@ end
     value.set('it should be fine')
     @output.should_receive(:collect).once #.with(@text, @one)
 
-    map(@script, key, value, @output, nil)
+    map(key, value, @output, nil, @script)
   end
 
   it 'can reduce sucessfully' do
@@ -43,6 +43,6 @@ end
     values = [@one, @one, @one]
     @output.should_receive(:collect).once #.with(@text, @one)
 
-    reduce(@script, key, values, @output, nil)
+    reduce(key, values, @output, nil, @script)
   end
 end
