@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 BIN_DIR=`dirname "$0"`
 BASE_DIR=`cd $BIN_DIR/..; pwd`
 
@@ -6,7 +6,7 @@ BASE_DIR=`cd $BIN_DIR/..; pwd`
 HADOOP=$HADOOP_HOME/bin/hadoop 
 if [ ! -f $HADOOP ]; then
   HADOOP=$BIN_DIR/hadoop
-  HADOOP_OPTS="--config $BASE_DIR/conf"
+  #HADOOP_OPTS="--config $BASE_DIR/conf"
 fi
 
 # fetch jruby jar if not exist
