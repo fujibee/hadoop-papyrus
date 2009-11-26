@@ -10,7 +10,7 @@ module HadoopDsl
     end
 
     def self.require_dsl_lib(dsl_name)
-      require underscore_name(dsl_name)
+      require snake_case(dsl_name)
     end
   end
 

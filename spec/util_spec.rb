@@ -3,8 +3,8 @@ require File.join(File.dirname(__FILE__) , 'spec_helper')
 require 'util'
 
 describe 'utilities' do
-  it 'can change camelcase str to underscore' do
-    underscore_name('CamelCaseStr').should == 'camel_case_str'
+  it 'can change camelcase str to snakecase' do
+    snake_case('CamelCaseStr').should == 'camel_case_str'
   end
 
   it 'can read file and get file data to string' do
