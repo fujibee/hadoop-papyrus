@@ -1,6 +1,6 @@
 use 'WordCount'
 
-data 'apache log on test2' do
+data 'word conut example' do
   from 'wc/inputs'
   to 'wc/outputs'
 

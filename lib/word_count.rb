@@ -4,7 +4,6 @@ require 'enumerator'
 module HadoopDsl::WordCount
   include HadoopDsl
   
-  KEY_SEP = "\t"
   AVAILABLE_METHODS = [:count_uniq, :total]
 
   # common
@@ -69,6 +68,6 @@ module HadoopDsl::WordCount
     # emitters
     def count_uniq; aggregate end
 
-    def total(types); aggregate end
+    def total(*types); aggregate end
   end
 end
