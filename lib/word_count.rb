@@ -5,6 +5,7 @@ module HadoopDsl::WordCount
   include HadoopDsl
   
   AVAILABLE_METHODS = [:count_uniq, :total]
+  TOTAL_PREFIX = "\t"
 
   # common
   module WordCountMapRed
@@ -50,11 +51,11 @@ module HadoopDsl::WordCount
       types.each do |type|
         case type
         when :bytes
-          @controller.emit('total bytes' => @value.gsub(/\s/, '').length)
+          @controller.emit("#{TOTAL_PREFIX}total bytes" => @value.gsub(/\s/, '').length)
         when :words
-          @controller.emit('total words' => @value.split.size)
+          @controller.emit("#{TOTAL_PREFIX}total words" => @value.split.size)
         when :lines
-          @controller.emit('total lines' => 1)
+          @controller.emit("#{TOTAL_PREFIX}total lines" => 1)
         end
       end
     end
@@ -66,8 +67,10 @@ module HadoopDsl::WordCount
     end
 
     # emitters
-    def count_uniq; aggregate end
+    def count_uniq; aggregate unless total_value? end
+    def total(*types); aggregate if total_value? end
 
-    def total(*types); aggregate end
+    private
+    def total_value?; @key =~ /^#{TOTAL_PREFIX}/ end
   end
 end
