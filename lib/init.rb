@@ -22,6 +22,13 @@ def reduce(key, values, output, reporter, script)
   write(output, reducer)
 end
 
+def setup(conf, script)
+  setup = SetupFactory.create(script, conf)
+  setup.run
+
+  setup.paths.to_java
+end
+
 private
 
 def write(output, controller)

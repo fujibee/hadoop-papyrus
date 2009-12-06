@@ -19,6 +19,7 @@ fi
 
 # construct command line
 HADOOP_RUBY_LIB_DIR=$BASE_DIR/lib
+export HADOOP_CLASSPATH=$HADOOP_RUBY_LIB_DIR
 for x in `ls $HADOOP_RUBY_LIB_DIR`; do
   DSL_FILES=$HADOOP_RUBY_LIB_DIR/$x,$DSL_FILES
 done

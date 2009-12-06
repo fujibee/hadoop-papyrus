@@ -5,7 +5,10 @@ include HadoopDsl
 
 describe 'BaseMapRed' do
   before(:all) do
-    @script = create_tmp_script('input')
+    @script = create_tmp_script(<<-EOF)
+from 'test/inputs'
+to 'test/outputs'
+    EOF
   end
 
   it 'emit key value' do
@@ -26,6 +29,11 @@ describe 'BaseMapRed' do
     reducer.run
   end
 
+  it 'can run BaseSetup in minimum' do
+    setup = BaseSetup.new(@script, nil)
+    setup.run
+  end
+
   describe BaseMapper do
     it 'can emit as identity' do
       model = BaseMapperModel.new('key', 'value')
@@ -43,6 +51,20 @@ describe 'BaseMapRed' do
       model.aggregate
 
       reducer.emitted.should == [{'key' => 6}] 
+    end
+  end
+
+  describe BaseSetup do
+    it 'can get input path' do
+      setup = BaseSetup.new(@script, nil)
+      setup.run
+      setup.paths[0].should == 'test/inputs'
+      setup.paths[1].should == 'test/outputs'
+    end
+
+    it 'can get output path' do
+      setup = BaseSetup.new(@script, nil)
+      setup.run
     end
   end
 end

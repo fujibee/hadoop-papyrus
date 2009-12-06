@@ -19,6 +19,11 @@ describe 'MapRed Factory' do
     reducer.class.should == LogAnalysisReducer
   end
 
+  it 'can create setup' do
+    s = SetupFactory.create(@script, nil)
+    s.class.should == LogAnalysisSetup
+  end
+
   it 'specify dsl name from script' do
     dsl_name = MapRedFactory.dsl_name(@script)
     dsl_name.should == 'LogAnalysis'

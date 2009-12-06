@@ -1,10 +1,9 @@
-require File.join(File.dirname(__FILE__) , 'spec_helper')
-
 require 'java'
 require 'init'
 
 import 'org.apache.hadoop.io.IntWritable'
 import 'org.apache.hadoop.io.Text'
+import 'org.apache.hadoop.mapred.JobConf'
 
 describe 'mapreduce init' do
 
@@ -12,6 +11,9 @@ describe 'mapreduce init' do
     @script = create_tmp_script(<<-EOF)
 use 'LogAnalysis'
 data 'test' do
+  from 'test/inputs'
+  to 'test/outputs'
+
   separate(" ")
   column_name 'c0', 'c1', 'c2', 'c3'
   topic 't1' do
@@ -44,5 +46,13 @@ end
     @output.should_receive(:collect).once #.with(@text, @one)
 
     reduce(key, values, @output, nil, @script)
+  end
+
+  it 'can set job conf' do
+    conf = JobConf.new
+    paths = setup(conf, @script)
+
+    paths[0].should == 'test/inputs'
+    paths[1].should == 'test/outputs'
   end
 end

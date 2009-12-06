@@ -18,6 +18,14 @@ module HadoopDsl::LogAnalysis
   end
 
   # controller
+  class LogAnalysisSetup < BaseSetup
+    def initialize(script, conf)
+      super(script, conf)
+    end
+
+    include LogAnalysisMapRed
+  end
+
   class LogAnalysisMapper < BaseMapper
     def initialize(script, key, value)
       super(script, LogAnalysisMapperModel.new(key, value))

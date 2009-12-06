@@ -24,6 +24,24 @@ module HadoopDsl
     def method_missing(method_name, *args) self end
   end
 
+  class BaseSetup
+    def initialize(script, conf)
+      @script, @conf = script, conf
+    end
+
+    def run
+      eval(read_file(@script), binding, @script)
+    end
+
+    def paths; [@from, @to] end
+
+    def from(path) @from = path end
+    def to(path) @to = path end
+
+    # all DSL statements without def is processed here
+    def method_missing(method_name, *args) self end
+  end
+
   class BaseMapper < BaseMapRed
     def initialize(script, model)
       super(script, model)
