@@ -24,7 +24,7 @@ end
 include HadoopDsl::WordCount
 describe 'Word Count Example' do
   before(:all) do
-    @script = File.join(File.dirname(__FILE__), '..', 'examples', 'word_count.rb')
+    @script = File.join(File.dirname(__FILE__), '..', 'examples', 'word_count_test.rb')
     @value = 'Lorem ipsum ipsum Lorem sit amet,'
   end
 
