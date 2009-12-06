@@ -55,16 +55,11 @@ to 'test/outputs'
   end
 
   describe BaseSetup do
-    it 'can get input path' do
+    it 'can get paths' do
       setup = BaseSetup.new(@script, nil)
       setup.run
       setup.paths[0].should == 'test/inputs'
       setup.paths[1].should == 'test/outputs'
-    end
-
-    it 'can get output path' do
-      setup = BaseSetup.new(@script, nil)
-      setup.run
     end
   end
 end

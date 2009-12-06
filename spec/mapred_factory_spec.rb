@@ -24,6 +24,11 @@ describe 'MapRed Factory' do
     s.class.should == LogAnalysisSetup
   end
 
+  it 'can create base if not exists in specific DSL' do
+    s = SetupFactory.create(create_tmp_script("use 'WordCount'"), nil)
+    s.class.should == BaseSetup
+  end
+
   it 'specify dsl name from script' do
     dsl_name = MapRedFactory.dsl_name(@script)
     dsl_name.should == 'LogAnalysis'

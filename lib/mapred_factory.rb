@@ -37,7 +37,7 @@ module HadoopDsl
       dsl_name = self.dsl_name(script)
       require_dsl_lib(dsl_name)
       setup_class = "HadoopDsl::#{dsl_name}::#{dsl_name}Setup" 
-      return eval(setup_class).new(script, conf)
+      eval(setup_class).new(script, conf) rescue HadoopDsl::BaseSetup.new(script, conf)
     end
   end
 end
