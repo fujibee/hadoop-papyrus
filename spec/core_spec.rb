@@ -52,6 +52,14 @@ to 'test/outputs'
 
       reducer.emitted.should == [{'key' => 6}] 
     end
+
+    it 'can emit as identity' do
+      model = BaseReducerModel.new('key', [1, 2, 3])
+      reducer = BaseReducer.new(@script, model)
+      model.identity
+
+      reducer.emitted.should == [{'key' => 1}, {'key' => 2}, {'key' => 3}] 
+    end
   end
 
   describe BaseSetup do

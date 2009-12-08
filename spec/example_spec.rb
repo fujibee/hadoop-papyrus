@@ -48,3 +48,25 @@ describe 'Word Count Example' do
     reducer.emitted.first["Lorem"].should == 3
   end
 end
+
+include HadoopDsl::HiveLike
+describe 'Hive Like Example' do
+  before(:all) do
+    @script = File.join(File.dirname(__FILE__), '..', 'examples', 'hive_like_test.rb')
+    @value = 'apple, 3, 100'
+  end
+
+  it 'can run example by mapper' do
+    mapper = HiveLikeMapper.new(@script, nil, @value)
+    mapper.run
+    mapper.emitted.size.should == 1
+    mapper.emitted.first['items'].should == @value
+  end
+
+  it 'can run example by reducer' do
+    values = ['v1', 'v2', 'v3']
+    reducer = HiveLikeReducer.new(@script, "items", values)
+    reducer.run
+    reducer.emitted.first["items"].should == 'v1'
+  end
+end

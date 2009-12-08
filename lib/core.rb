@@ -15,7 +15,12 @@ module HadoopDsl
     end
 
     def run
-      eval(read_file(@script), binding, @script)
+      body = pre_process(read_file(@script))
+      eval(body, binding, @script)
+    end
+
+    def pre_process(body)
+      body # do nothing
     end
 
     def emit(hash) @emitted << hash end
@@ -85,6 +90,10 @@ module HadoopDsl
     # common functions
     def aggregate
       @controller.emit(@key => @values.inject {|ret, i| ret + i})
+    end
+
+    def identity
+      @values.each {|v| @controller.emit(@key => v)}
     end
   end
 end
