@@ -60,7 +60,7 @@ describe 'Hive Like Example' do
     mapper = HiveLikeMapper.new(@script, nil, @value)
     mapper.run
     mapper.emitted.size.should == 1
-    mapper.emitted.first['items'].should == @value
+    mapper.emitted.first['items'].should == '3, 100, apple'
   end
 
   it 'can run example by reducer' do

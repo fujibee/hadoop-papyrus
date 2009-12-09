@@ -18,11 +18,19 @@ describe HiveLikeMapper do
     @value = 'apple, 3, 100'
   end
 
+  it 'should create table' do
+    mapper = HiveLikeMapper.new(nil, nil, @value)
+    mapper.create_table('items', 'item', 'STRING', 'quantity', 'INT', 'price', 'INT');
+    mapper.table.name.should == 'items'
+    mapper.table.column(0).should == 'item'
+    mapper.table.column(1).should == 'quantity'
+  end
+
   it 'should select' do
     mapper = HiveLikeMapper.new(nil, nil, @value)
-
+    mapper.create_table('items', 'item', 'STRING', 'quantity', 'INT', 'price', 'INT');
     mapper.select("item", "quantity", "price", "from", "items")
-    mapper.emitted.first.should == {'items' => 'apple, 3, 300'}
+    mapper.emitted.first.should == {'items' => 'apple, 3, 100'}
   end
 
   it 'should pre process script body' do

@@ -7,8 +7,7 @@ use 'HiveLike'
 create_table items(item STRING, quantity INT, price INT);
 load_data 'hive-like/items.txt' items;
 
-select item, quantity, price from items;
-#select item, quantity, (price * quantity) as 'total' from items;
+#select quantity, price, item from items;
 
 # expect
 # 0  apple 3 300

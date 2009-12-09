@@ -35,7 +35,8 @@ module HadoopDsl
     end
 
     def run
-      eval(read_file(@script), binding, @script)
+      body = pre_process(read_file(@script))
+      eval(body, binding, @script)
     end
 
     def paths; [@from, @to] end
