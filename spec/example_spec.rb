@@ -56,6 +56,16 @@ describe 'Hive Like Example' do
     @value = 'apple, 3, 100'
   end
 
+  it 'can run setup' do
+    conf = mock('conf')
+    conf.should_receive(:output_key_class=).once
+    conf.should_receive(:output_value_class=).once
+
+    setup = HiveLikeSetup.new(@script, conf)
+    setup.run
+    setup.paths[0].should == 'hive-like/items.txt'
+  end
+
   it 'can run example by mapper' do
     mapper = HiveLikeMapper.new(@script, nil, @value)
     mapper.run

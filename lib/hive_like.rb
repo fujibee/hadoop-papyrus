@@ -14,17 +14,20 @@ module HadoopDsl::HiveLike
         next if line =~ /^#/
         if line =~ /^(\w*)\s+(.*);$/
           method = $1
-          args = $2.gsub(/[\(\)]/, ' ').split.map do |s|
-            stripped = s.gsub(/[\s,]/, '')
-            %Q!"#{stripped}"!
-          end.join(", ")
+          args = sprit_and_marge_args($2)
           processed << "#{method}(#{args})\n"
         else 
           processed << line + "\n"
         end
       end
-      p processed
       processed
+    end
+
+    def sprit_and_marge_args(raw)
+      raw.gsub(/[\(\)]/, ' ').split.map do |s|
+        stripped = s.gsub(/[\s,"']/, '')
+        %Q!"#{stripped}"!
+      end.join(", ")
     end
   end
 
@@ -32,7 +35,16 @@ module HadoopDsl::HiveLike
   class HiveLikeSetup < BaseSetup
     def load_data(inputs, table)
       @from = inputs
+      @to = inputs.gsub(/#{File.basename(inputs)}$/, 'outputs')
     end
+    
+    def output_format
+      @conf.output_key_class = Text
+      @conf.output_value_class = Text
+    end
+
+    # might not need but occur error if not exists
+    def select(*args) end
 
     include HiveLikeMapRed
   end

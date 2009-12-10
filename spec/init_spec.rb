@@ -29,9 +29,8 @@ end
   end
 
   it 'can map sucessfully' do
-    key = Text.new
+    key, value  = Text.new, Text.new
     key.set("key")
-    value = Text.new
     value.set('it should be fine')
     @output.should_receive(:collect).once #.with(@text, @one)
 
@@ -39,9 +38,8 @@ end
   end
 
   it 'can reduce sucessfully' do
-    key = Text.new
+    key, value = Text.new, Text.new
     key.set("t1\tkey")
-    value = Text.new
     values = [@one, @one, @one]
     @output.should_receive(:collect).once #.with(@text, @one)
 

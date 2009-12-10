@@ -6,10 +6,15 @@ include HadoopDsl::HiveLike
 
 describe HiveLikeSetup do
   it 'should load data' do
-    script = create_tmp_script("load_data 'hive-like/inputs', items;")
-    setup = HiveLikeSetup.new(script, nil)
+    script = create_tmp_script(%Q!load_data "hive-like/inputs", items;!)
+    conf = mock('conf')
+    conf.should_receive(:output_key_class=).once
+    conf.should_receive(:output_value_class=).once
+
+    setup = HiveLikeSetup.new(script, conf)
     setup.run
     setup.paths[0].should == 'hive-like/inputs'
+    setup.paths[1].should == 'hive-like/outputs'
   end
 end
 

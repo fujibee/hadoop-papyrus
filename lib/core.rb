@@ -32,12 +32,20 @@ module HadoopDsl
   class BaseSetup
     def initialize(script, conf)
       @script, @conf = script, conf
+      output_format
     end
 
     def run
       body = pre_process(read_file(@script))
       eval(body, binding, @script)
     end
+
+    def pre_process(body)
+      body # do nothing
+    end
+
+    # do nothing
+    def output_format; end
 
     def paths; [@from, @to] end
 
