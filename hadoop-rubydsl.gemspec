@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   ]
   s.files = [
     "README",
+     "Rakefile",
      "TODO",
      "VERSION",
      "bin/hadoop",
@@ -29,6 +30,7 @@ Gem::Specification.new do |s|
      "examples/apachelog.rb",
      "examples/hive_like_test.rb",
      "examples/word_count_test.rb",
+     "hadoop-rubydsl.gemspec",
      "lib/core.rb",
      "lib/hive_like.rb",
      "lib/init.rb",
@@ -66,9 +68,12 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
+      s.add_runtime_dependency(%q<jruby-on-hadoop>, [">= 0"])
     else
+      s.add_dependency(%q<jruby-on-hadoop>, [">= 0"])
     end
   else
+    s.add_dependency(%q<jruby-on-hadoop>, [">= 0"])
   end
 end
 

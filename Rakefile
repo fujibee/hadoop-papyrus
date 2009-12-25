@@ -8,6 +8,7 @@ begin
     gemspec.homepage = "http://github.com/fujibee/hadoop-rubydsl"
     gemspec.authors = ["Koichi Fujikawa"]
 
+    gemspec.add_dependency 'jruby-on-hadoop'
     gemspec.files.exclude "spec/**/*"
   end
 rescue LoadError
