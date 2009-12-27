@@ -5,24 +5,25 @@
 
 Gem::Specification.new do |s|
   s.name = %q{hadoop-rubydsl}
-  s.version = "0.0.1"
+  s.version = "0.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Koichi Fujikawa"]
-  s.date = %q{2009-12-26}
+  s.date = %q{2009-12-28}
   s.description = %q{Hadoop Ruby DSL}
   s.email = %q{fujibee@gmail.com}
-  s.executables = ["hadoop", "hadoop-ruby.sh"]
+  s.executables = ["hadoop-hudson.sh", "hadoop-ruby.sh"]
   s.extra_rdoc_files = [
     "README",
      "TODO"
   ]
   s.files = [
-    "README",
+    ".gitignore",
+     "README",
      "Rakefile",
      "TODO",
      "VERSION",
-     "bin/hadoop",
+     "bin/hadoop-hudson.sh",
      "bin/hadoop-ruby.sh",
      "conf/hadoop-site.xml",
      "examples/apachelog-v2-2.rb",
