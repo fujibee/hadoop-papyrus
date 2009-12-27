@@ -1,50 +1,27 @@
 = hadoop-rubydsl
 
+! now this module is reconstructing.. Please wait after year 2010. !
+
+Enable to run Ruby DSL script on your Hadoop.
+
 == Description
-HadoopのMapper/ReducerをRubyによるDSLで記述することができます。
-hadoop-ruby.jarを利用します。
 
-例）
-apachelog.rb
+You can write DSL by Ruby to run Hadoop as Mapper / Reducer.
+Depended on 'jruby-on-hadoop' project.
 
-# log:
-#   127.0.0.1 - frank [10/Oct/2000:13:55:36 -0700] "GET /apache_pb.gif HTTP/1.0" 200 2326
-#   127.0.0.1 - frank2 [10/Oct/2000:13:55:36 -0700] "GET /apache_pb2.gif HTTP/1.0" 200 2326
-#   127.0.0.1 - frank2 [10/Oct/2000:13:55:36 -0700] "GET /apache_pb3.gif HTTP/1.0" 404 2326
+== Install
 
-use 'LogAnalysis'
-data.pattern /(.*) (.*) (.*) (\[.*\]) (".*") (\d*) (\d*)/
-column[2].count_uniq
-column[3].count_uniq
-column[4].count_uniq
-column[5].count_uniq
-column[6].sum
+$ gem install hadoop-rubydsl
 
-=> 
-col2    frank   1
-col2    frank2  2
-col3    [10/Oct/2000:13:55:36 -0700]    3
-col4    "GET /apache_pb.gif HTTP/1.0"   1
-col4    "GET /apache_pb2.gif HTTP/1.0"  1
-col4    "GET /apache_pb3.gif HTTP/1.0"  1
-col5    200     2
-col5    404     1
-col6    6978
+== How To Use
+0. set HADOOP_HOME to your system. Run hadoop servers.
 
-== Usage
-0. HADOOP_HOMEを正しく設定し、Hadoopを一式立ち上げておく。
-
-1. jruby-complete-*.jar を lib/java 以下にコピー
+1. Upload your data to HDFS.
 ex)
-$ wget http://jruby.kenai.com/downloads/1.4.0RC2/jruby-complete-1.4.0RC2.jar
-$ cp jruby-complete-*.jar lib/java/
+$ hadoop dfs -put apachelog inputs/
 
-2. データを HDFS にアップロード
-ex)
-$ hadoop dfs -copyFromLocal apachelog inputs/
-
-3. MapReduce実行
-$ bin/hadoop-ruby.sh examples/apachelog.rb inputs outputs
+2. Run
+$ hrd examples/apachelog.rb
 
 == Author
 Koichi Fujikawa <fujibee@gmail.com>
