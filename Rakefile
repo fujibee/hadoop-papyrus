@@ -11,6 +11,7 @@ begin
     gemspec.add_dependency 'jruby-on-hadoop'
     gemspec.files.exclude "spec/**/*"
   end
+  Jeweler::GemcutterTasks.new
 rescue LoadError
   puts "Jeweler not available. Install it with: gem install jeweler"
 end
