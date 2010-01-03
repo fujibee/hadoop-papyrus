@@ -35,6 +35,7 @@ Gem::Specification.new do |s|
      "hadoop-rubydsl.gemspec",
      "lib/client.rb",
      "lib/core.rb",
+     "lib/dsl_init.rb",
      "lib/hadoop-dsl.rb",
      "lib/hive_like.rb",
      "lib/log_analysis.rb",

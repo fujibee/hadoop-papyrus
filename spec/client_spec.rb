@@ -15,6 +15,6 @@ describe HadoopDsl::Client do
 
   it 'can add dsl file into mapred args' do
     @client.mapred_args.should ==
-      "--script dsl_init.rb in out --dslfile wordcount.rb"
+      "--script dsl_init.rb in out --dslfile examples/wordcount.rb"
   end
 end
