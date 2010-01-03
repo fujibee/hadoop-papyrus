@@ -1,9 +1,4 @@
-require 'java'
 require 'dsl_init'
-
-import 'org.apache.hadoop.io.IntWritable'
-import 'org.apache.hadoop.io.Text'
-import 'org.apache.hadoop.mapred.JobConf'
 
 describe 'mapreduce init' do
 
@@ -24,22 +19,20 @@ end
   end
 
   before do
-    @one = IntWritable.new(1)
+    @one = 1
     @output = mock('output')
   end
 
   it 'can map sucessfully' do
-    key, value  = Text.new, Text.new
-    key.set("key")
-    value.set('it should be fine')
+    key = 'key'
+    value = 'it should be fine'
     @output.should_receive(:collect).once #.with(@text, @one)
 
     map(key, value, @output, nil, @script)
   end
 
   it 'can reduce sucessfully' do
-    key, value = Text.new, Text.new
-    key.set("t1\tkey")
+    key = "t1\tkey"
     values = [@one, @one, @one]
     @output.should_receive(:collect).once #.with(@text, @one)
 
@@ -47,7 +40,7 @@ end
   end
 
   it 'can set job conf' do
-    conf = JobConf.new
+    conf = mock('jobconf')
     paths = setup(conf, @script)
 
     paths[0].should == 'test/inputs'
