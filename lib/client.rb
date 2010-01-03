@@ -5,13 +5,17 @@ module HadoopDsl
       @script_path = HadoopDsl.dsl_init_script
       @script = File.basename(@script_path)
       @dsl_file_path = @args[0]
+      @dsl_file = File.basename(@dsl_file_path)
       @files << @script_path << @dsl_file_path
-      add_dsl_lib_files # TODO move properly
+
+      # TODO move properly, with jruby-on-hadoop
+      add_dsl_lib_files
+      ENV['HADOOP_CLASSPATH'] = "#{ENV['HADOOP_CLASSPATH']}:#{File.dirname(@dsl_file_path)}"
     end
 
     def mapred_args
       args = super
-      args += " --dslfile #{@dsl_file_path}"
+      args += " --dslfile #{@dsl_file}"
       args
     end
 
