@@ -6,6 +6,17 @@ module HadoopDsl
   end
 
   def read_file(file_name)
-    File.open(file_name).read
+    # read as usual
+    body = File.open(file_name).read rescue nil
+    return body if body
+
+    # read from loadpath
+    $:.each do |path|
+      p path
+      body = File.open(File.join(path, file_name)).read rescue next
+      return body if body
+    end
+
+    raise "cannot find file - #{file_name}"
   end
 end

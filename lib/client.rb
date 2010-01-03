@@ -10,7 +10,7 @@ module HadoopDsl
 
       # TODO move properly, with jruby-on-hadoop
       add_dsl_lib_files
-      ENV['HADOOP_CLASSPATH'] = "#{ENV['HADOOP_CLASSPATH']}:#{File.dirname(@dsl_file_path)}"
+      ENV['RUBYLIB'] = File.dirname(@dsl_file_path)
     end
 
     def mapred_args

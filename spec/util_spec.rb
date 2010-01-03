@@ -12,4 +12,8 @@ describe 'utilities' do
     @script = create_tmp_script(script_body)
     read_file(@script).should == script_body
   end
+
+  it 'raise error if no file in loadpath' do
+    lambda { read_file('not_exists_on_loadpath') }.should raise_error
+  end
 end
