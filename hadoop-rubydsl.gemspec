@@ -50,6 +50,7 @@ Gem::Specification.new do |s|
   s.summary = %q{Hadoop Ruby DSL}
   s.test_files = [
     "spec/spec_helper.rb",
+     "spec/dsl_init_spec.rb",
      "spec/core_spec.rb",
      "spec/client_spec.rb",
      "spec/util_spec.rb",
@@ -58,7 +59,6 @@ Gem::Specification.new do |s|
      "spec/hive_like_spec.rb",
      "spec/log_analysis_spec.rb",
      "spec/example_spec.rb",
-     "spec/init_spec.rb",
      "examples/apachelog-v2.rb",
      "examples/hive_like_test.rb",
      "examples/word_count_test.rb",

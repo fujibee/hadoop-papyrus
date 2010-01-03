@@ -17,4 +17,10 @@ describe HadoopDsl::Client do
     @client.mapred_args.should ==
       "--script dsl_init.rb in out --dslfile examples/wordcount.rb"
   end
+
+  it 'can add dsl lib files' do
+    lib_path = HadoopDsl.lib_path
+    @client.files.should include File.join(lib_path, 'core.rb')
+    @client.files.should include File.join(lib_path, 'log_analysis.rb')
+  end
 end
