@@ -1,0 +1,58 @@
+= hadoop-rubydsl
+
+Enable to run Ruby DSL script on your Hadoop.
+
+== Description
+
+You can write DSL by Ruby to run Hadoop as Mapper / Reducer.
+This gem depends on 'jruby-on-hadoop' project.
+
+== Install
+
+Required gems are all on GemCutter.
+
+1. Upgrade your rubygem to 1.3.5
+2. Install gems
+ $ gem install hadoop-rubydsl
+
+== Usage
+
+1. Run Hadoop cluster on your machines and set HADOOP_HOME env variable.
+2. put files into your hdfs. ex) wc/inputs/file1
+3. Now you can run 'hrd' like below:
+ $ hrd examples/word_count_test.rb
+You can get Hadoop job results in your hdfs wc/outputs/part-*
+
+== Examples
+
+Word Count DSL script
+ use 'WordCount'
+
+ from 'wc/inputs'
+ to 'wc/outputs'
+ 
+ count_uniq
+ total :bytes, :words, :lines
+
+Log Analysis DSL script
+ use 'LogAnalysis'
+ 
+ data 'apache log on test2' do
+   from 'apachelog/inputs'
+   to 'apachelog/outputs'
+ 
+   each_line do
+     pattern /(.*) (.*) (.*) \[(.*)\] (".*") (\d*) (\d*) (.*) "(.*)"/
+     column_name 'remote_host', 'pass', 'user', 'access_date', 'request', 'status', 'bytes', 'pass', 'ua'
+ 
+     topic 'ua counts', :label => 'ua' do
+       count_uniq column[:ua]
+     end
+   end
+ end
+
+== Author
+Koichi Fujikawa <fujibee@gmail.com>
+
+== Copyright
+License: Apache License
