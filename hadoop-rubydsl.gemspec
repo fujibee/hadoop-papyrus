@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{hadoop-rubydsl}
-  s.version = "0.0.2"
+  s.version = "0.0.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Koichi Fujikawa"]
@@ -14,12 +14,12 @@ Gem::Specification.new do |s|
   s.email = %q{fujibee@gmail.com}
   s.executables = ["hrd", "hadoop-hudson.sh", "hadoop-ruby.sh"]
   s.extra_rdoc_files = [
-    "README",
+    "README.rdoc",
      "TODO"
   ]
   s.files = [
     ".gitignore",
-     "README",
+     "README.rdoc",
      "Rakefile",
      "TODO",
      "VERSION",
