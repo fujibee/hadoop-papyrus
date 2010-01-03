@@ -1,5 +1,5 @@
 require 'java'
-require 'init'
+require 'dsl_init'
 
 import 'org.apache.hadoop.io.IntWritable'
 import 'org.apache.hadoop.io.Text'

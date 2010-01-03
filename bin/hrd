@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 
-require 'hadoop-rubydsl'
+require 'hadoop-dsl'
 
-client = JRubyOnHadoop::Client.new
-client.run
+HadoopDsl::Client.new(ARGV).run

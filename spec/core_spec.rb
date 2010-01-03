@@ -1,4 +1,4 @@
-require 'init'
+require 'dsl_init'
 require 'core'
 
 include HadoopDsl

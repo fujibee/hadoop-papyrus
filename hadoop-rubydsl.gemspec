@@ -9,10 +9,10 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Koichi Fujikawa"]
-  s.date = %q{2009-12-28}
+  s.date = %q{2010-01-03}
   s.description = %q{Hadoop Ruby DSL}
   s.email = %q{fujibee@gmail.com}
-  s.executables = ["hadoop-hudson.sh", "hadoop-ruby.sh"]
+  s.executables = ["hrd", "hadoop-hudson.sh", "hadoop-ruby.sh"]
   s.extra_rdoc_files = [
     "README",
      "TODO"
@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
      "VERSION",
      "bin/hadoop-hudson.sh",
      "bin/hadoop-ruby.sh",
+     "bin/hrd",
      "conf/hadoop-site.xml",
      "examples/apachelog-v2-2.rb",
      "examples/apachelog-v2.rb",
@@ -32,11 +33,10 @@ Gem::Specification.new do |s|
      "examples/hive_like_test.rb",
      "examples/word_count_test.rb",
      "hadoop-rubydsl.gemspec",
+     "lib/client.rb",
      "lib/core.rb",
+     "lib/hadoop-dsl.rb",
      "lib/hive_like.rb",
-     "lib/init.rb",
-     "lib/java/.gitignore",
-     "lib/java/hadoop-ruby.jar",
      "lib/log_analysis.rb",
      "lib/mapred_factory.rb",
      "lib/util.rb",
@@ -50,6 +50,7 @@ Gem::Specification.new do |s|
   s.test_files = [
     "spec/spec_helper.rb",
      "spec/core_spec.rb",
+     "spec/client_spec.rb",
      "spec/util_spec.rb",
      "spec/mapred_factory_spec.rb",
      "spec/word_count_spec.rb",

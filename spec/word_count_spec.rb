@@ -1,4 +1,3 @@
-require 'init'
 require 'core'
 require 'word_count'
 

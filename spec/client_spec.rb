@@ -7,7 +7,7 @@ describe HadoopDsl::Client do
 
   it 'can parse args' do
     @client.files.join.should match /ruby_wrapper\.rb/
-    @client.files.join.should match /dsl_init_script\.rb/
+    @client.files.join.should match /dsl_init\.rb/
     @client.files.should include 'examples/wordcount.rb'
     @client.inputs.should == 'in'
     @client.outputs.should == 'out'
@@ -15,6 +15,6 @@ describe HadoopDsl::Client do
 
   it 'can add dsl file into mapred args' do
     @client.mapred_args.should ==
-      "--script dsl_init_script.rb in out --dslfile wordcount.rb"
+      "--script dsl_init.rb in out --dslfile wordcount.rb"
   end
 end

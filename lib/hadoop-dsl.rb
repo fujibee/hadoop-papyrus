@@ -7,6 +7,6 @@ module HadoopDsl
   end
 
   def self.dsl_init_script
-    File.join(lib_path, "dsl_init_script.rb")
+    File.join(lib_path, "dsl_init.rb")
   end
 end

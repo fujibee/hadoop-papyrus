@@ -1,4 +1,3 @@
-require 'init'
 require 'core'
 require 'log_analysis'
 
