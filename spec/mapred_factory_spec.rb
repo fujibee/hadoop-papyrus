@@ -6,7 +6,7 @@ require 'log_analysis'
 describe 'MapRed Factory' do
 
   before(:all) do
-    @script = create_tmp_script("use 'LogAnalysis'")
+    @script = create_tmp_script("dsl 'LogAnalysis'")
   end
 
   it 'can create mapper' do
@@ -25,7 +25,7 @@ describe 'MapRed Factory' do
   end
 
   it 'can create base if not exists in specific DSL' do
-    s = SetupFactory.create(create_tmp_script("use 'WordCount'"), nil)
+    s = SetupFactory.create(create_tmp_script("dsl 'WordCount'"), nil)
     s.class.should == BaseSetup
   end
 

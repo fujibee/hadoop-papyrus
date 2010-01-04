@@ -1,4 +1,4 @@
-use 'HiveLike'
+dsl 'HiveLike'
 
 # hive-like/items.txt
 # apple, 3, 100

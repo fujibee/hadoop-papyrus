@@ -4,7 +4,7 @@ describe 'mapreduce init' do
 
   before(:all) do
     @script = create_tmp_script(<<-EOF)
-use 'LogAnalysis'
+dsl 'LogAnalysis'
 data 'test' do
   from 'test/inputs'
   to 'test/outputs'

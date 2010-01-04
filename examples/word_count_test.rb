@@ -1,4 +1,4 @@
-use 'WordCount'
+dsl 'WordCount'
 
 from 'wc/inputs'
 to 'wc/outputs'

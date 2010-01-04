@@ -4,7 +4,7 @@ module HadoopDsl
   class MapRedFactory
     def self.dsl_name(script)
       read_file(script).each_line do |line|
-        dsl_name = $1 if line =~ /^use\s*'(\w*)'/
+        dsl_name = $1 if line =~ /^dsl\s*'(\w*)'/
         return dsl_name
       end
     end

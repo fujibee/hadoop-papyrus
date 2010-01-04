@@ -1,4 +1,4 @@
-use 'LogAnalysis'
+dsl 'LogAnalysis'
 
 data 'apache log on test2' do
   from 'apachelog/inputs'
