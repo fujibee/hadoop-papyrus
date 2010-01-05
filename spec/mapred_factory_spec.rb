@@ -39,4 +39,22 @@ describe 'MapRed Factory' do
     MapRedFactory.require_dsl_lib(dsl_name).should_not be_nil
     LogAnalysisMapper
   end
+
+  it 'can create mapper if statement has double quote' do
+    script = create_tmp_script(%Q!dsl "LogAnalysis"!)
+    mapper = MapperFactory.create(script, nil, nil)
+    mapper.class.should == LogAnalysisMapper
+  end
+
+  it 'can create mapper if exists more space' do
+    script = create_tmp_script(%Q!  dsl   "LogAnalysis"   !)
+    mapper = MapperFactory.create(script, nil, nil)
+    mapper.class.should == LogAnalysisMapper
+  end
+
+  it 'can create mapper if exists bracket' do
+    script = create_tmp_script(%Q!  dsl ("LogAnalysis")   !)
+    mapper = MapperFactory.create(script, nil, nil)
+    mapper.class.should == LogAnalysisMapper
+  end
 end

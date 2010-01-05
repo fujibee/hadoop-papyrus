@@ -12,7 +12,6 @@ module HadoopDsl
 
     # read from loadpath
     $:.each do |path|
-      p path
       body = File.open(File.join(path, file_name)).read rescue next
       return body if body
     end
