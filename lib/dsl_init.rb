@@ -1,6 +1,5 @@
-require 'core'
+require 'hadoop-dsl'
 require 'java'
-require 'mapred_factory'
 
 import 'org.apache.hadoop.io.IntWritable'
 import 'org.apache.hadoop.io.Text'

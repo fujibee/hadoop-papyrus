@@ -1,5 +1,3 @@
-require 'util'
-
 module HadoopDsl
   class MapRedFactory
     def self.dsl_name(script)

@@ -1,5 +1,8 @@
 require 'jruby-on-hadoop'
 require 'client'
+require 'util'
+require 'mapred_factory'
+require 'core'
 
 module HadoopDsl
   def self.lib_path

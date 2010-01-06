@@ -1,10 +1,29 @@
-require 'util'
 require 'forwardable'
 
 module HadoopDsl
+  # common
+  module DslElement
+    # all DSL statements without def is processed here
+    def method_missing(method_name, *args) self end
+  end
+
   # controller
+  module DslController
+    include DslElement
+
+    def run
+      body = pre_process(read_file(@script))
+      eval(body, binding, @script)
+    end
+
+    def pre_process(body)
+      body # do nothing
+    end
+  end
+
   class BaseMapRed
     extend Forwardable
+    include DslController
 
     attr_reader :emitted
 
@@ -14,66 +33,31 @@ module HadoopDsl
       @emitted = []
     end
 
-    def run
-      body = pre_process(read_file(@script))
-      eval(body, binding, @script)
-    end
-
-    def pre_process(body)
-      body # do nothing
-    end
-
     def emit(hash) @emitted << hash end
-
-    # all DSL statements without def is processed here
-    def method_missing(method_name, *args) self end
   end
 
   class BaseSetup
+    include DslController
+
     def initialize(script, conf)
       @script, @conf = script, conf
       output_format
     end
 
-    def run
-      body = pre_process(read_file(@script))
-      eval(body, binding, @script)
-    end
-
-    def pre_process(body)
-      body # do nothing
-    end
-
-    # do nothing
-    def output_format; end
-
+    def output_format; end # do nothing
     def paths; [@from, @to] end
-
     def from(path) @from = path end
     def to(path) @to = path end
-
-    # all DSL statements without def is processed here
-    def method_missing(method_name, *args) self end
   end
 
-  class BaseMapper < BaseMapRed
-    def initialize(script, model)
-      super(script, model)
-    end
-  end
-
-  class BaseReducer < BaseMapRed
-    def initialize(script, model)
-      super(script, model)
-    end
-  end
+  # currently no difference in Mapper and reducer
+  class BaseMapper < BaseMapRed; end
+  class BaseReducer < BaseMapRed; end
 
   # model
   class BaseModel
+    include DslElement
     attr_accessor :controller
-
-    # all DSL statements without def is processed here
-    def method_missing(method_name, *args) self end
   end
 
   class BaseMapperModel < BaseModel
