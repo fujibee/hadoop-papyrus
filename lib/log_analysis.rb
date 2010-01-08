@@ -19,16 +19,16 @@ module HadoopDsl::LogAnalysis
     def topic(desc, options = {}, &block)
       @model.create_topic(desc, options)
       yield if block_given?
-      @model.current_topic
+      current_topic
     end
 
     def separate(sep)
-      parts = @model.value.split(sep)
+      parts = value.split(sep)
       @model.create_or_replace_columns_with(parts) {|column, value| column.value = value}
     end
 
     def pattern(re)
-      if @model.value =~ re
+      if value =~ re
         md = Regexp.last_match
         @model.create_or_replace_columns_with(md.captures) {|column, value| column.value = value}
       end
@@ -42,12 +42,15 @@ module HadoopDsl::LogAnalysis
 
     # emitters
     def count_uniq(column)
-      emit([@model.current_topic.label, KEY_SEP, column.value].join => 1)
+      emit([current_topic.label, KEY_SEP, column.value].join => 1)
     end
 
     def sum(column)
-      emit([@model.current_topic.label].join => column.value.to_i)
+      emit([current_topic.label].join => column.value.to_i)
     end
+
+  private
+    def current_topic; @model.current_topic end
   end
 
   class LogAnalysisReducer < HadoopDsl::BaseReducer

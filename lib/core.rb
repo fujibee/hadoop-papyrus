@@ -38,6 +38,9 @@ module HadoopDsl
     end
 
     def emit(hash) @emitted << hash end
+
+  private
+    def key; @model.key end
   end
 
   class BaseSetup
@@ -59,6 +62,9 @@ module HadoopDsl
     def identity
       emit(@model.key => @model.value)
     end
+
+  private
+    def value; @model.values end
   end
 
   class BaseReducer < BaseMapRed
@@ -70,6 +76,9 @@ module HadoopDsl
     def identity
       @model.values.each {|v| emit(@model.key => v)}
     end
+
+  private
+    def values; @model.values end
   end
 
   # model
