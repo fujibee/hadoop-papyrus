@@ -1,5 +1,4 @@
 # spec helper
-
 require 'tempfile'
 
 def create_tmp_script(body)

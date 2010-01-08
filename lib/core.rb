@@ -1,10 +1,14 @@
+require 'hadoop-dsl'
 require 'forwardable'
 
 module HadoopDsl
   # common
   module DslElement
     # all DSL statements without def is processed here
-    def method_missing(method_name, *args) self end
+    def method_missing(method_name, *args)
+      yield if block_given?
+      self
+    end
   end
 
   # controller
@@ -12,7 +16,7 @@ module HadoopDsl
     include DslElement
 
     def run
-      body = pre_process(read_file(@script))
+      body = pre_process(HadoopDsl.read_file(@script))
       eval(body, binding, @script)
     end
 
@@ -50,9 +54,23 @@ module HadoopDsl
     def to(path) @to = path end
   end
 
-  # currently no difference in Mapper and reducer
-  class BaseMapper < BaseMapRed; end
-  class BaseReducer < BaseMapRed; end
+  class BaseMapper < BaseMapRed
+    # common functions
+    def identity
+      emit(@model.key => @model.value)
+    end
+  end
+
+  class BaseReducer < BaseMapRed
+    # common functions
+    def aggregate
+      emit(@model.key => @model.values.inject {|ret, i| ret + i})
+    end
+
+    def identity
+      @model.values.each {|v| emit(@model.key => v)}
+    end
+  end
 
   # model
   class BaseModel
@@ -66,11 +84,6 @@ module HadoopDsl
     def initialize(key, value)
       @key, @value = key, value
     end
-
-    # common functions
-    def identity
-      @controller.emit(@key => @value)
-    end
   end
 
   class BaseReducerModel < BaseModel
@@ -78,15 +91,6 @@ module HadoopDsl
 
     def initialize(key, values)
       @key, @values = key, values
-    end
-
-    # common functions
-    def aggregate
-      @controller.emit(@key => @values.inject {|ret, i| ret + i})
-    end
-
-    def identity
-      @values.each {|v| @controller.emit(@key => v)}
     end
   end
 end

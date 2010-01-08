@@ -1,4 +1,4 @@
-require 'dsl_init'
+require File.join(File.dirname(__FILE__), 'spec_helper')
 require 'core'
 
 include HadoopDsl
@@ -38,7 +38,7 @@ to 'test/outputs'
     it 'can emit as identity' do
       model = BaseMapperModel.new('key', 'value')
       mapper = BaseMapper.new(@script, model)
-      model.identity
+      mapper.identity
 
       mapper.emitted.should == [{'key' => 'value'}] 
     end
@@ -48,7 +48,7 @@ to 'test/outputs'
     it 'can emit as aggregate' do
       model = BaseReducerModel.new('key', [1, 2, 3])
       reducer = BaseReducer.new(@script, model)
-      model.aggregate
+      reducer.aggregate
 
       reducer.emitted.should == [{'key' => 6}] 
     end
@@ -56,7 +56,7 @@ to 'test/outputs'
     it 'can emit as identity' do
       model = BaseReducerModel.new('key', [1, 2, 3])
       reducer = BaseReducer.new(@script, model)
-      model.identity
+      reducer.identity
 
       reducer.emitted.should == [{'key' => 1}, {'key' => 2}, {'key' => 3}] 
     end

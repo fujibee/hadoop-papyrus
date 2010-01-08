@@ -1,11 +1,12 @@
 # utility functions
+require 'hadoop-dsl'
 
 module HadoopDsl
-  def snake_case(str)
+  def self.snake_case(str)
     str.gsub(/\B[A-Z]/, '_\&').downcase
   end
 
-  def read_file(file_name)
+  def self.read_file(file_name)
     # read as usual
     body = File.open(file_name).read rescue nil
     return body if body

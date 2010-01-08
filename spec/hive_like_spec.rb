@@ -1,4 +1,4 @@
-require 'core'
+require File.join(File.dirname(__FILE__), 'spec_helper')
 require 'hive_like'
 
 include HadoopDsl::HiveLike

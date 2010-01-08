@@ -1,11 +1,6 @@
-require 'core'
-require 'enumerator'
+require 'hadoop-dsl'
 
 module HadoopDsl::HiveLike
-  include HadoopDsl
-  
-  AVAILABLE_METHODS = [:select, :create_table, :table]
-
   # common
   module HiveLikeMapRed
     def pre_process(body)
@@ -17,7 +12,7 @@ module HadoopDsl::HiveLike
           args = sprit_and_marge_args($2)
           processed << "#{method}(#{args})\n"
         else 
-          processed << line + "\n"
+          processed << line + "\n" if line
         end
       end
       processed
@@ -32,15 +27,15 @@ module HadoopDsl::HiveLike
   end
 
   # controller
-  class HiveLikeSetup < BaseSetup
+  class HiveLikeSetup < HadoopDsl::BaseSetup
     def load_data(inputs, table)
       @from = inputs
       @to = inputs.gsub(/#{File.basename(inputs)}$/, 'outputs')
     end
     
     def output_format
-      @conf.output_key_class = Text
-      @conf.output_value_class = Text
+      @conf.output_key_class = HadoopDsl::Text
+      @conf.output_value_class = HadoopDsl::Text
     end
 
     # might not need but occur error if not exists
@@ -49,53 +44,48 @@ module HadoopDsl::HiveLike
     include HiveLikeMapRed
   end
 
-  class HiveLikeMapper < BaseMapper
+  class HiveLikeMapper < HadoopDsl::BaseMapper
     def initialize(script, key, value)
       super(script, HiveLikeMapperModel.new(key, value))
     end
 
     include HiveLikeMapRed
 
-    # model methods
-    def_delegators :@model, *AVAILABLE_METHODS
+    def_delegators :@model, :create_table, :table
+
+    # emitters
+    def select(*args)
+      from_index = args.index('from')
+      if from_index
+        values = args[0...from_index].map do |column|
+          splitted = @model.value.split(/[,\s]+/)
+          splitted[@model.table.columns.index(column)]
+        end
+        emit(args[from_index + 1] => values.join(", "))
+      end
+    end
   end
 
-  class HiveLikeReducer < BaseReducer
+  class HiveLikeReducer < HadoopDsl::BaseReducer
     def initialize(script, key, values)
       super(script, HiveLikeReducerModel.new(key, values))
     end
 
     include HiveLikeMapRed
 
-    # model methods
-    def_delegators :@model, *AVAILABLE_METHODS
+    # emitters
+    def select(*args) identity end
   end
 
   # model
-  class HiveLikeMapperModel < BaseMapperModel
+  class HiveLikeMapperModel < HadoopDsl::BaseMapperModel
     attr_reader :table
 
-    def initialize(key, value)
-      super(key, value)
-    end
-
-    # emitters
     def create_table(name, *column_and_type)
       @table = Table.new(name)
       column_and_type.each_with_index do |column, index|
         next if index % 2 != 0 # type
         @table.columns << column_and_type[index]
-      end
-    end
-
-    def select(*args)
-      from_index = args.index('from')
-      if from_index
-        values = args[0...from_index].map do |column|
-          splitted = @value.split(/[,\s]+/)
-          splitted[@table.columns.index(column)]
-        end
-        @controller.emit(args[from_index + 1] => values.join(", "))
       end
     end
 
@@ -111,12 +101,6 @@ module HadoopDsl::HiveLike
     end
   end
 
-  class HiveLikeReducerModel < BaseReducerModel
-    def initialize(key, values)
-      super(key, values)
-    end
-
-    # emitters
-    def select(*args) identity end
+  class HiveLikeReducerModel < HadoopDsl::BaseReducerModel
   end
 end

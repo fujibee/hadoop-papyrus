@@ -1,4 +1,4 @@
-require 'core'
+require 'hadoop-dsl'
 require 'log_analysis'
 
 include HadoopDsl::LogAnalysis

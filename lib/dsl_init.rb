@@ -1,14 +1,6 @@
 require 'hadoop-dsl'
-require 'java'
-
-import 'org.apache.hadoop.io.IntWritable'
-import 'org.apache.hadoop.io.Text'
 
 include HadoopDsl
-
-# Hadoop IO types
-HadoopDsl::Text = Text
-HadoopDsl::IntWritable = IntWritable
 
 def map(key, value, output, reporter, script)
   mapper = MapperFactory.create(script, key, value)

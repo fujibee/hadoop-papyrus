@@ -1,14 +1,16 @@
+require 'hadoop-dsl'
+
 module HadoopDsl
   class MapRedFactory
     def self.dsl_name(script)
-      read_file(script).each_line do |line|
+      HadoopDsl.read_file(script).each_line do |line|
         dsl_name = $1 if line =~ /\s*dsl\s*\(?["'](\w*)["']\)?/
         return dsl_name if dsl_name
       end
     end
 
     def self.require_dsl_lib(dsl_name)
-      require snake_case(dsl_name)
+      require HadoopDsl.snake_case(dsl_name)
     end
   end
 

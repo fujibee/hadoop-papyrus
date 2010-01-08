@@ -1,4 +1,5 @@
-require 'hadoop-dsl'
+require File.join(File.dirname(__FILE__), 'spec_helper')
+require 'client'
 
 describe HadoopDsl::Client do
   before do

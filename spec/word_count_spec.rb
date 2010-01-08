@@ -1,4 +1,4 @@
-require 'core'
+require File.join(File.dirname(__FILE__), 'spec_helper')
 require 'word_count'
 
 include HadoopDsl::WordCount

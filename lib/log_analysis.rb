@@ -1,55 +1,82 @@
-require 'core'
+require 'hadoop-dsl'
 require 'enumerator'
 
 module HadoopDsl::LogAnalysis
-  include HadoopDsl
-  
   KEY_SEP = "\t"
   PREFIX = 'col'
   PASS = nil
-  AVAILABLE_METHODS = [:separate, :pattern, :column_name, :column, :topic, :value, :count_uniq, :sum]
-
-  # common
-  module LogAnalysisMapRed
-    # entry point
-    def data(description = '', &block) yield end
-
-    def each_line(&block) yield end
-  end
+  MODEL_METHODS = [:column, :value]
 
   # controller
-  class LogAnalysisSetup < BaseSetup
-    def initialize(script, conf)
-      super(script, conf)
-    end
-
-    include LogAnalysisMapRed
-  end
-
-  class LogAnalysisMapper < BaseMapper
+  class LogAnalysisMapper < HadoopDsl::BaseMapper
     def initialize(script, key, value)
       super(script, LogAnalysisMapperModel.new(key, value))
     end
 
-    include LogAnalysisMapRed
-
     # model methods
-    def_delegators :@model, *AVAILABLE_METHODS
+    def_delegators :@model, *MODEL_METHODS
+   
+    def topic(desc, options = {}, &block)
+      @model.create_topic(desc, options)
+      yield if block_given?
+      @model.current_topic
+    end
+
+    def separate(sep)
+      parts = @model.value.split(sep)
+      @model.create_or_replace_columns_with(parts) {|column, value| column.value = value}
+    end
+
+    def pattern(re)
+      if @model.value =~ re
+        md = Regexp.last_match
+        @model.create_or_replace_columns_with(md.captures) {|column, value| column.value = value}
+      end
+    end
+
+    # column names by String converted to Symbol
+    def column_name(*names)
+      sym_names = names.map {|name| name.is_a?(String) ? name.to_sym : name }
+      @model.create_or_replace_columns_with(sym_names) {|column, name| column.name = name}
+    end
+
+    # emitters
+    def count_uniq(column)
+      emit([@model.current_topic.label, KEY_SEP, column.value].join => 1)
+    end
+
+    def sum(column)
+      emit([@model.current_topic.label].join => column.value.to_i)
+    end
   end
 
-  class LogAnalysisReducer < BaseReducer
+  class LogAnalysisReducer < HadoopDsl::BaseReducer
     def initialize(script, key, values)
       super(script, LogAnalysisReducerModel.new(key, values))
     end
 
-    include LogAnalysisMapRed
-
     # model methods
-    def_delegators :@model, *AVAILABLE_METHODS
+    def_delegators :@model, *MODEL_METHODS
+
+    def topic(desc, options = {}, &block)
+      @model.create_topic(desc, options)
+      yield if block_given?
+      @model.current_topic
+    end
+
+    def count_uniq(column)
+      aggregate if @model.topic == @model.current_topic
+    end
+
+    def sum(column)
+      aggregate if @model.topic == @model.current_topic
+    end
   end
 
   # model
-  class LogAnalysisMapperModel < BaseMapperModel
+  class LogAnalysisMapperModel < HadoopDsl::BaseMapperModel
+    attr_reader :current_topic
+
     def initialize(key, value)
       super(key, value)
       @columns = ColumnArray.new
@@ -58,28 +85,8 @@ module HadoopDsl::LogAnalysis
 
     def column; @columns end
 
-    def topic(desc, options = {}, &block)
+    def create_topic(desc, options)
       @topics << @current_topic = Topic.new(desc, options[:label])
-      yield if block_given?
-      @current_topic
-    end
-
-    def separate(sep)
-      parts = @value.split(sep)
-      create_or_replace_columns_with(parts) {|column, value| column.value = value}
-    end
-
-    def pattern(re)
-      if @value =~ re
-        md = Regexp.last_match
-        create_or_replace_columns_with(md.captures) {|column, value| column.value = value}
-      end
-    end
-
-    # column names by String converted to Symbol
-    def column_name(*names)
-      sym_names = names.map {|name| name.is_a?(String) ? name.to_sym : name }
-      create_or_replace_columns_with(sym_names) {|column, name| column.name = name}
     end
 
     def create_or_replace_columns_with(array, &block)
@@ -89,15 +96,6 @@ module HadoopDsl::LogAnalysis
         c
       end
       @columns = ColumnArray.new(columns)
-    end
-
-    # emitters
-    def count_uniq(column)
-      @controller.emit([@current_topic.label, KEY_SEP, column.value].join => 1)
-    end
-
-    def sum(column)
-      @controller.emit([@current_topic.label].join => column.value.to_i)
     end
 
     class ColumnArray < Array
@@ -130,7 +128,9 @@ module HadoopDsl::LogAnalysis
     end
   end
 
-  class LogAnalysisReducerModel < BaseReducerModel
+  class LogAnalysisReducerModel < HadoopDsl::BaseReducerModel
+    attr_reader :topic, :current_topic
+
     def initialize(key, values)
       super(key, values)
       if key =~ /(\w*)#{KEY_SEP}?(.*)/
@@ -138,18 +138,8 @@ module HadoopDsl::LogAnalysis
       end
     end
 
-    def topic(desc, options = {}, &block)
+    def create_topic(desc, options)
       @current_topic = Topic.new(options[:label] || desc.gsub(/\s/, '_'), nil)
-      yield if block_given?
-      @current_topic
-    end
-
-    def count_uniq(column)
-      aggregate if @topic == @current_topic
-    end
-
-    def sum(column)
-      aggregate if @topic == @current_topic
     end
 
     class Topic

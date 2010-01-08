@@ -1,76 +1,56 @@
-require 'core'
+require 'hadoop-dsl'
 require 'enumerator'
 
 module HadoopDsl::WordCount
-  include HadoopDsl
-  
-  AVAILABLE_METHODS = [:count_uniq, :total]
+  MODEL_METHODS = []
   TOTAL_PREFIX = "\t"
 
-  # common
-  module WordCountMapRed
-    # entry point
-    def data(description = '', &block) yield end
-  end
-
   # controller
-  class WordCountMapper < BaseMapper
+  class WordCountMapper < HadoopDsl::BaseMapper
     def initialize(script, key, value)
       super(script, WordCountMapperModel.new(key, value))
     end
 
-    include WordCountMapRed
-
     # model methods
-    def_delegators :@model, *AVAILABLE_METHODS
-  end
-
-  class WordCountReducer < BaseReducer
-    def initialize(script, key, values)
-      super(script, WordCountReducerModel.new(key, values))
-    end
-
-    include WordCountMapRed
-
-    # model methods
-    def_delegators :@model, *AVAILABLE_METHODS
-  end
-
-  # model
-  class WordCountMapperModel < BaseMapperModel
-    def initialize(key, value)
-      super(key, value)
-    end
+    def_delegators :@model, *MODEL_METHODS
 
     # emitters
     def count_uniq
-      @value.split.each {|word| @controller.emit(word => 1)}
+      @model.value.split.each {|word| emit(word => 1)}
     end
 
     def total(*types)
       types.each do |type|
         case type
         when :bytes
-          @controller.emit("#{TOTAL_PREFIX}total bytes" => @value.gsub(/\s/, '').length)
+          emit("#{TOTAL_PREFIX}total bytes" => @model.value.gsub(/\s/, '').length)
         when :words
-          @controller.emit("#{TOTAL_PREFIX}total words" => @value.split.size)
+          emit("#{TOTAL_PREFIX}total words" => @model.value.split.size)
         when :lines
-          @controller.emit("#{TOTAL_PREFIX}total lines" => 1)
+          emit("#{TOTAL_PREFIX}total lines" => 1)
         end
       end
     end
   end
 
-  class WordCountReducerModel < BaseReducerModel
-    def initialize(key, values)
-      super(key, values)
+  class WordCountReducer < HadoopDsl::BaseReducer
+    def initialize(script, key, values)
+      super(script, WordCountReducerModel.new(key, values))
     end
 
-    # emitters
-    def count_uniq; aggregate unless total_value? end
-    def total(*types); aggregate if total_value? end
+    # model methods
+    def_delegators :@model, *MODEL_METHODS
 
-    private
+    # emitters
+    def count_uniq; aggregate unless @model.total_value? end
+    def total(*types); aggregate if @model.total_value? end
+  end
+
+  # model
+  class WordCountMapperModel < HadoopDsl::BaseMapperModel
+  end
+
+  class WordCountReducerModel < HadoopDsl::BaseReducerModel
     def total_value?; @key =~ /^#{TOTAL_PREFIX}/ end
   end
 end
