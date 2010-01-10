@@ -83,6 +83,41 @@ describe LogAnalysisMapper do
     topic = mapper.topic('desc with space')
     topic.label.should == 'desc_with_space'
   end
+
+  it 'can select date monthly' do
+    value = '2010/1/1 newyearday'
+    mapper = LogAnalysisMapper.new(nil, nil, value)
+    mapper.separate(' ')
+    mapper.column_name 'date', 'holiday'
+
+    ['yearly', 'monthly', 'daily'].each do |term|
+      mapper.topic(term) do
+        mapper.select_date_by mapper.column[:date], term.to_sym
+        mapper.count_uniq mapper.column[:holiday]
+      end
+    end
+    mapper.emitted.should ==
+      [
+        {"yearly\t2010\tnewyearday" => 1},
+        {"monthly\t201001\tnewyearday" => 1},
+        {"daily\t20100101\tnewyearday" => 1}
+      ]
+  end
+end
+
+Topic = LogAnalysisMapperModel::Topic
+describe Topic do
+  it 'can get key with label' do
+    t = Topic.new('label')
+    t.key.should == 'label'
+  end
+
+  it 'can get key with label and elements' do
+    t = Topic.new('label')
+    t.key_elements << 'e1'
+    t.key_elements << 'e2'
+    t.key.should == "label\te1\te2"
+  end
 end
 
 describe LogAnalysisReducer do

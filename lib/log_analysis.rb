@@ -40,17 +40,37 @@ module HadoopDsl::LogAnalysis
       @model.create_or_replace_columns_with(sym_names) {|column, name| column.name = name}
     end
 
+    def select_date_by(column, term)
+      require 'time'
+      time = parse_time(column.value)
+      time_key = case term
+                 when :daily then time.strftime('%Y%m%d') 
+                 when :monthly then time.strftime('%Y%m') 
+                 when :yearly then time.strftime('%Y') 
+                 end
+      current_topic.key_elements << time_key
+    end
+
     # emitters
     def count_uniq(column)
-      emit([current_topic.label, KEY_SEP, column.value].join => 1)
+      current_topic.key_elements << column.value
+      emit(current_topic.key => 1)
     end
 
     def sum(column)
-      emit([current_topic.label].join => column.value.to_i)
+      emit(current_topic.key => column.value.to_i)
     end
 
   private
     def current_topic; @model.current_topic end
+
+    def parse_time(str)
+      begin Time.parse(str)
+      rescue
+        # apachelog pattern ex) "10/Oct/2000:13:55:36 -0700"
+        Time.parse($1) if str =~ /^(\d*\/\w*\/\d*):/
+      end
+    end
   end
 
   class LogAnalysisReducer < HadoopDsl::BaseReducer
@@ -121,12 +141,21 @@ module HadoopDsl::LogAnalysis
     end
 
     class Topic
+      attr_reader :key_elements
+
       def initialize(desc, label = nil)
         @desc, @label = desc, label
+        @key_elements = []
       end
 
       def label
         @label || @desc.gsub(/\s/, '_')
+      end
+
+      def key
+        without_label =
+          @key_elements.size > 0 ? @key_elements.join(KEY_SEP) : nil
+        [label, without_label].compact.join(KEY_SEP)
       end
     end
   end
