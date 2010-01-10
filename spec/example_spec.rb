@@ -6,13 +6,14 @@ include HadoopDsl::LogAnalysis
 describe 'Aapach Log Example' do
   before(:all) do
     @script = File.join(File.dirname(__FILE__), '..', 'examples', 'log_analysis_test.rb')
-    @value = '127.0.0.1 - frank [10/Oct/2000:13:55:36 -0700] "GET /apache_pb.gif HTTP/1.0" 200 2326 "-" "Chrome"'
+    @bot_ua = "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
+    @value = %Q!127.0.0.1 - frank [10/Oct/2000:13:55:36 -0700] "GET /apache_pb.gif HTTP/1.0" 200 2326 "-" "#{@bot_ua}"!
   end
 
   it 'can run example by mapper' do
     mapper = LogAnalysisMapper.new(@script, nil, @value)
     mapper.run
-    mapper.emitted.first["ua\tChrome"].should == 1
+    mapper.emitted.first.should == {"ua\t#{@bot_ua}" => 1}
   end
 
   it 'can run example by reducer' do
