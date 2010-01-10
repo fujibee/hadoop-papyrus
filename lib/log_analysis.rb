@@ -52,8 +52,15 @@ module HadoopDsl::LogAnalysis
     end
 
     # emitters
-    def count_uniq(column)
-      current_topic.key_elements << column.value
+    def count_uniq(column_or_value)
+      uniq_key =
+        case column_or_value
+        when LogAnalysisMapperModel::Column
+          column = column_or_value
+          column.value
+        else column_or_value
+        end
+      current_topic.key_elements << uniq_key
       emit(current_topic.key => 1)
     end
 

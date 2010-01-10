@@ -39,13 +39,22 @@ describe LogAnalysisMapper do
     mapper.column[:user].value.should == 'frank'
   end
 
-  it 'should count uniq column' do
+  it 'should count uniq by column' do
     value = 'count uniq'
     mapper = LogAnalysisMapper.new(nil, nil, value)
     mapper.separate(' ')
     mapper.topic('t1') { mapper.count_uniq mapper.column[1] }
 
-    mapper.emitted.first["t1\tuniq"].should == 1
+    mapper.emitted.should == [{"t1\tuniq" => 1}]
+  end
+
+  it 'should count uniq by value' do
+    value = 'count uniq'
+    mapper = LogAnalysisMapper.new(nil, nil, value)
+    mapper.separate(' ')
+    mapper.topic('t1') { mapper.count_uniq 'orig value' }
+
+    mapper.emitted.should == [{"t1\torig value" => 1}]
   end
 
   it 'should sum column value' do
