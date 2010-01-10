@@ -1,4 +1,4 @@
-require 'hadoop-dsl'
+require 'hadoop_dsl'
 
 module HadoopDsl
   class MapRedFactory

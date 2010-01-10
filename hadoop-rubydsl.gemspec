@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Koichi Fujikawa"]
-  s.date = %q{2010-01-04}
+  s.date = %q{2010-01-10}
   s.description = %q{Hadoop Ruby DSL}
   s.email = %q{fujibee@gmail.com}
   s.executables = ["hrd", "hadoop-hudson.sh", "hadoop-ruby.sh"]
@@ -33,10 +33,10 @@ Gem::Specification.new do |s|
      "examples/hive_like_test.rb",
      "examples/word_count_test.rb",
      "hadoop-rubydsl.gemspec",
-     "lib/client.rb",
      "lib/core.rb",
      "lib/dsl_init.rb",
-     "lib/hadoop-dsl.rb",
+     "lib/hadoop_dsl.rb",
+     "lib/hadoop_dsl_client.rb",
      "lib/hive_like.rb",
      "lib/log_analysis.rb",
      "lib/mapred_factory.rb",

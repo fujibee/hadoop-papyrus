@@ -1,4 +1,4 @@
-require 'hadoop-dsl'
+require File.join(File.dirname(__FILE__), 'spec_helper')
 require 'log_analysis'
 
 include HadoopDsl::LogAnalysis

@@ -1,5 +1,5 @@
 # utility functions
-require 'hadoop-dsl'
+require 'hadoop_dsl'
 
 module HadoopDsl
   def self.snake_case(str)

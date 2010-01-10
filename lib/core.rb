@@ -1,4 +1,4 @@
-require 'hadoop-dsl'
+require 'hadoop_dsl'
 require 'forwardable'
 
 module HadoopDsl

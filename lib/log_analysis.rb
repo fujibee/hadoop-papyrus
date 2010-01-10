@@ -1,4 +1,4 @@
-require 'hadoop-dsl'
+require 'hadoop_dsl'
 require 'enumerator'
 
 module HadoopDsl::LogAnalysis
