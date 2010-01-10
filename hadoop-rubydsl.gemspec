@@ -14,23 +14,19 @@ Gem::Specification.new do |s|
   s.email = %q{fujibee@gmail.com}
   s.executables = ["hrd", "hadoop-hudson.sh", "hadoop-ruby.sh"]
   s.extra_rdoc_files = [
-    "README.rdoc",
-     "TODO"
+    "README.rdoc"
   ]
   s.files = [
     ".gitignore",
      "README.rdoc",
      "Rakefile",
-     "TODO",
      "VERSION",
      "bin/hadoop-hudson.sh",
      "bin/hadoop-ruby.sh",
      "bin/hrd",
      "conf/hadoop-site.xml",
-     "examples/apachelog-v2-2.rb",
-     "examples/apachelog-v2.rb",
-     "examples/apachelog.rb",
      "examples/hive_like_test.rb",
+     "examples/log_analysis_test.rb",
      "examples/word_count_test.rb",
      "hadoop-rubydsl.gemspec",
      "lib/core.rb",
@@ -59,11 +55,9 @@ Gem::Specification.new do |s|
      "spec/hive_like_spec.rb",
      "spec/log_analysis_spec.rb",
      "spec/example_spec.rb",
-     "examples/apachelog-v2.rb",
      "examples/hive_like_test.rb",
-     "examples/word_count_test.rb",
-     "examples/apachelog-v2-2.rb",
-     "examples/apachelog.rb"
+     "examples/log_analysis_test.rb",
+     "examples/word_count_test.rb"
   ]
 
   if s.respond_to? :specification_version then

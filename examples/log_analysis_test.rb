@@ -16,7 +16,7 @@ data 'apache log on test2' do
     end
 
     topic 'ua counts by monthly' do
-      select_date_by column[:access_date], :monthly
+      select_date_by column[:access_date], :daily
       count_uniq column[:ua]
     end
 
