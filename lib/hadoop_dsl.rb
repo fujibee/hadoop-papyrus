@@ -1,5 +1,3 @@
-require 'jruby-on-hadoop'
-require 'hadoop_dsl_client'
 require 'util'
 require 'mapred_factory'
 require 'core'

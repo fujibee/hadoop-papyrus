@@ -1,3 +1,5 @@
+require 'jruby-on-hadoop'
+
 module HadoopDsl
   def self.lib_path
     File.expand_path(File.dirname(__FILE__))
