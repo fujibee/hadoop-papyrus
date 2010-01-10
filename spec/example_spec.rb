@@ -1,23 +1,24 @@
 require 'log_analysis'
 require 'word_count'
+require 'hive_like'
 
 include HadoopDsl::LogAnalysis
 describe 'Aapach Log Example' do
   before(:all) do
-    @script = File.join(File.dirname(__FILE__), '..', 'examples', 'apachelog-v2.rb')
-    @value = '127.0.0.1 - frank [10/Oct/2000:13:55:36 -0700] "GET /apache_pb.gif HTTP/1.0" 200 2326'
+    @script = File.join(File.dirname(__FILE__), '..', 'examples', 'log_analysis_test.rb')
+    @value = '127.0.0.1 - frank [10/Oct/2000:13:55:36 -0700] "GET /apache_pb.gif HTTP/1.0" 200 2326 "-" "Chrome"'
   end
 
   it 'can run example by mapper' do
     mapper = LogAnalysisMapper.new(@script, nil, @value)
     mapper.run
-    mapper.emitted.first["user\tfrank"].should == 1
+    mapper.emitted.first["ua\tChrome"].should == 1
   end
 
   it 'can run example by reducer' do
-    reducer = LogAnalysisReducer.new(@script, "user\tfrank", [1, 1, 1])
+    reducer = LogAnalysisReducer.new(@script, "ua\tChrome", [1, 1, 1])
     reducer.run
-    reducer.emitted.first["user\tfrank"].should == 3
+    reducer.emitted.first["ua\tChrome"].should == 3
   end
 end
 

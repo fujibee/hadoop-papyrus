@@ -14,5 +14,15 @@ data 'apache log on test2' do
     topic 'ua counts', :label => 'ua' do
       count_uniq column[:ua]
     end
+
+    topic 'ua counts by monthly' do
+      select_date_by column[:access_date], :monthly
+      count_uniq column[:ua]
+    end
+
+#    topic 'total bytes' do
+#      select_date column[:access_date], BY_MONTHLY
+#      sum column[:bytes].to_kilobytes # / 1024
+#    end
   end
 end
