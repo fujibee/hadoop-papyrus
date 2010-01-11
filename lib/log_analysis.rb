@@ -40,6 +40,17 @@ module HadoopDsl::LogAnalysis
       @model.create_or_replace_columns_with(sym_names) {|column, name| column.name = name}
     end
 
+    def group_by(column_or_value)
+      case column_or_value
+      when LogAnalysisMapperModel::Column
+        column = column_or_value
+        current_topic.key_elements << column.value
+      else
+        value = column_or_value
+        current_topic.key_elements << value
+      end
+    end
+
     def group_date_by(column, term)
       require 'time'
       time = parse_time(column.value)
@@ -58,7 +69,7 @@ module HadoopDsl::LogAnalysis
         when LogAnalysisMapperModel::Column
           column = column_or_value
           column.value
-        else column_or_value
+        else column_or_value # value
         end
       current_topic.key_elements << uniq_key
       emit(current_topic.key => 1)

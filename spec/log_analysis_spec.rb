@@ -93,7 +93,7 @@ describe LogAnalysisMapper do
     topic.label.should == 'desc_with_space'
   end
 
-  it 'can select date monthly' do
+  it 'can group date monthly' do
     value = '2010/1/1 newyearday'
     mapper = LogAnalysisMapper.new(nil, nil, value)
     mapper.separate(' ')
@@ -111,6 +111,19 @@ describe LogAnalysisMapper do
         {"monthly\t201001\tnewyearday" => 1},
         {"daily\t20100101\tnewyearday" => 1}
       ]
+  end
+
+  it 'can group by' do
+    value = '1 2 bingo!'
+    mapper = LogAnalysisMapper.new(nil, nil, value)
+    mapper.separate(' ')
+    mapper.column_name 'id', 'sub_id', 'data'
+
+    mapper.topic('test') do
+      mapper.group_by mapper.column[:sub_id]
+      mapper.count_uniq mapper.column[:data]
+    end
+    mapper.emitted.should == [{"test\t2\tbingo!" => 1}]
   end
 end
 

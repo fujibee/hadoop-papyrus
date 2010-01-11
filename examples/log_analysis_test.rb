@@ -21,6 +21,13 @@ data 'apache log on test2' do
       count_uniq bot
     end
 
+    topic 'ua counts group by path' do
+      request = column[:request].value
+      path = request.split(/\s*/)[1]
+      group_by path
+      count_uniq column[:ua]
+    end
+
     topic 'ua counts by monthly' do
       group_date_by column[:access_date], :daily
       count_uniq column[:ua]
