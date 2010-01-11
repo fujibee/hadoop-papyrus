@@ -17,11 +17,12 @@ data 'apache log on test2' do
 
     topic 'count bot', :label => 'bot' do
       ua = column[:ua].value
-      count_uniq ua if ua =~ /bot/i
+      bot = ua if ua =~ /bot/i
+      count_uniq bot
     end
 
     topic 'ua counts by monthly' do
-      select_date_by column[:access_date], :daily
+      group_date_by column[:access_date], :daily
       count_uniq column[:ua]
     end
 

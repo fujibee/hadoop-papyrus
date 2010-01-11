@@ -40,7 +40,7 @@ module HadoopDsl::LogAnalysis
       @model.create_or_replace_columns_with(sym_names) {|column, name| column.name = name}
     end
 
-    def select_date_by(column, term)
+    def group_date_by(column, term)
       require 'time'
       time = parse_time(column.value)
       time_key = case term

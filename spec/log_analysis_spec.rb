@@ -101,7 +101,7 @@ describe LogAnalysisMapper do
 
     ['yearly', 'monthly', 'daily'].each do |term|
       mapper.topic(term) do
-        mapper.select_date_by mapper.column[:date], term.to_sym
+        mapper.group_date_by mapper.column[:date], term.to_sym
         mapper.count_uniq mapper.column[:holiday]
       end
     end
