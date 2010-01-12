@@ -114,7 +114,7 @@ describe LogAnalysisMapper do
   end
 
   it 'can group by' do
-    value = '1 2 bingo!'
+    value = '1 sub_2 bingo!'
     mapper = LogAnalysisMapper.new(nil, nil, value)
     mapper.separate(' ')
     mapper.column_name 'id', 'sub_id', 'data'
@@ -123,7 +123,7 @@ describe LogAnalysisMapper do
       mapper.group_by mapper.column[:sub_id]
       mapper.count_uniq mapper.column[:data]
     end
-    mapper.emitted.should == [{"test\t2\tbingo!" => 1}]
+    mapper.emitted.should == [{"test\tsub_2\tbingo!" => 1}]
   end
 end
 
