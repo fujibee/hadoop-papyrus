@@ -26,7 +26,7 @@ You can get Hadoop job results in your hdfs wc/outputs/part-*
 == Examples
 
 Word Count DSL script
- use 'WordCount'
+ dsl 'WordCount'
 
  from 'wc/inputs'
  to 'wc/outputs'
@@ -35,7 +35,7 @@ Word Count DSL script
  total :bytes, :words, :lines
 
 Log Analysis DSL script
- use 'LogAnalysis'
+ dsl 'LogAnalysis'
  
  data 'apache log on test2' do
    from 'apachelog/inputs'
