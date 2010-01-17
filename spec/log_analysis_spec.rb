@@ -23,6 +23,15 @@ describe LogAnalysisMapper do
     mapper.column[2].value.should == 'frank'
   end
 
+  it 'should non-local exit if cannot separate by pattern' do
+    mapper = LogAnalysisMapper.new(nil, nil, @apache_log + " a")
+    mapper.each_line do
+      mapper.pattern /(.*) (.*) (.*) \[(.*)\] (".*") (\d*) (\d*)$/
+      fail 'should not be reached'
+    end
+    mapper.column[0].should be_nil
+  end
+
   it 'should label column name by string' do
     mapper = LogAnalysisMapper.new(nil, nil, @apache_log)
     mapper.pattern /(.*) (.*) (.*) \[(.*)\] (".*") (\d*) (\d*)/

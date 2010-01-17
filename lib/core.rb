@@ -5,8 +5,9 @@ module HadoopDsl
   # common
   module DslElement
     # all DSL statements without def is processed here
-    def method_missing(method_name, *args)
-      yield if block_given?
+    def method_missing(name, *args)
+      # if block given, labeled for non-local exit
+      catch name do; yield end if block_given?
       self
     end
   end

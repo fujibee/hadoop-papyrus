@@ -31,6 +31,7 @@ module HadoopDsl::LogAnalysis
       if value =~ re
         md = Regexp.last_match
         @model.create_or_replace_columns_with(md.captures) {|column, value| column.value = value}
+      else throw :each_line # non-local exit
       end
     end
 
