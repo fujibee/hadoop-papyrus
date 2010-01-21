@@ -15,20 +15,31 @@ module HadoopDsl
   end
 
   class MapperFactory < MapRedFactory
+    # for cache in map loop
+    @@mapper_class = nil
     def self.create(script, key, value)
-      dsl_name = self.dsl_name(script)
-      require_dsl_lib(dsl_name)
-      mapper_class = "HadoopDsl::#{dsl_name}::#{dsl_name}Mapper" 
-      return eval(mapper_class).new(script, key, value)
+      # once decide in map loop
+      unless @@mapper_class
+        dsl_name = self.dsl_name(script)
+        require_dsl_lib(dsl_name)
+        @@mapper_class = eval("HadoopDsl::#{dsl_name}::#{dsl_name}Mapper")
+      end
+
+      @@mapper_class.new(script, key, value)
     end
   end
 
   class ReducerFactory < MapRedFactory
+    @@reducer_class = nil
     def self.create(script, key, values)
-      dsl_name = self.dsl_name(script)
-      require_dsl_lib(dsl_name)
-      reducer_class = "HadoopDsl::#{dsl_name}::#{dsl_name}Reducer" 
-      return eval(reducer_class).new(script, key, values)
+      # once decide in reduce loop
+      unless @@reducer_class
+        dsl_name = self.dsl_name(script)
+        require_dsl_lib(dsl_name)
+        @@reducer_class = eval("HadoopDsl::#{dsl_name}::#{dsl_name}Reducer")
+      end
+
+      @@reducer_class.new(script, key, values)
     end
   end
 

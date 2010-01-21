@@ -59,4 +59,16 @@ describe 'MapRed Factory' do
     mapper = MapperFactory.create(script, nil, nil)
     mapper.class.should == LogAnalysis::LogAnalysisMapper
   end
+
+  it 'can create mapper from class name cache' do
+    mapper = MapperFactory.create(@script, nil, nil)
+    mapper2 = MapperFactory.create(@script, nil, nil)
+    mapper.class.should == mapper2.class
+  end
+
+  it 'can create reducer from class name cache' do
+    reducer = ReducerFactory.create(@script, nil, nil)
+    reducer2 = ReducerFactory.create(@script, nil, nil)
+    reducer.class.should == reducer2.class
+  end
 end
