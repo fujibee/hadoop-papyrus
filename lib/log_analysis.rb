@@ -9,6 +9,8 @@ module HadoopDsl::LogAnalysis
 
   # controller
   class LogAnalysisMapper < HadoopDsl::BaseMapper
+    @@reg_cache = {}
+
     def initialize(script, key, value)
       super(script, LogAnalysisMapperModel.new(key, value))
     end
@@ -27,7 +29,12 @@ module HadoopDsl::LogAnalysis
       @model.create_or_replace_columns_with(parts) {|column, value| column.value = value}
     end
 
-    def pattern(re)
+    def pattern(reg_str)
+      # try to get RE from cache
+      cached = @@reg_cache[reg_str] 
+      re = cached ? @@reg_cache[reg_str] : Regexp.new(reg_str)
+      @@reg_cache[reg_str] ||= re # new cache
+
       if value =~ re
         md = Regexp.last_match
         @model.create_or_replace_columns_with(md.captures) {|column, value| column.value = value}
