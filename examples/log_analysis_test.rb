@@ -23,14 +23,16 @@ data 'apache log on test2' do
 
     topic 'ua counts group by path' do
       request = column[:request].value
-      path = request.split(/\s+/)[1]
-      group_by path
+      if request
+        path = request.split(/\s+/)[1]
+        group_by path
+      end
       count_uniq column[:ua]
     end
 
     topic 'ua counts by daily' do
-      group_date_by column[:access_date], :daily
-      count_uniq column[:ua]
+#      group_date_by column[:access_date], :daily
+#      count_uniq column[:ua]
     end
 
 #    topic 'total bytes' do
