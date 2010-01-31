@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require 'hadoop_dsl_client'
+
+HadoopDsl::Client.new(ARGV).run
