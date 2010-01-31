@@ -1,4 +1,4 @@
-= hadoop-rubydsl
+= hadoop-papyrus
 
 Enable to run Ruby DSL script on your Hadoop.
 
@@ -13,7 +13,7 @@ Required gems are all on GemCutter.
 
 1. Upgrade your rubygem to 1.3.5
 2. Install gems
- $ gem install hadoop-rubydsl
+ $ gem install hadoop-papyrus
 
 == Usage
 

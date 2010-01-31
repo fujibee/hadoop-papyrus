@@ -1,11 +1,11 @@
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gemspec|
-    gemspec.name = "hadoop-rubydsl"
-    gemspec.summary = "Hadoop Ruby DSL"
-    gemspec.description = "Hadoop Ruby DSL"
+    gemspec.name = "hadoop-papyrus"
+    gemspec.summary = "Hadoop papyrus"
+    gemspec.description = "Hadoop papyrus - Ruby DSL for Hadoop"
     gemspec.email = "fujibee@gmail.com"
-    gemspec.homepage = "http://github.com/fujibee/hadoop-rubydsl"
+    gemspec.homepage = "http://github.com/fujibee/hadoop-papyrus"
     gemspec.authors = ["Koichi Fujikawa"]
 
     gemspec.add_dependency 'jruby-on-hadoop'

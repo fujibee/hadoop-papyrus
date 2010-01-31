@@ -5,14 +5,15 @@
 
 Gem::Specification.new do |s|
   s.name = %q{hadoop-papyrus}
-  s.version = "0.0.5"
+  s.version = "0.0.6"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Koichi Fujikawa"]
   s.date = %q{2010-01-31}
+  s.default_executable = %q{papyrus}
   s.description = %q{Hadoop papyrus - Ruby DSL for Hadoop}
   s.email = %q{fujibee@gmail.com}
-  s.executables = ["hrd", "hadoop-hudson.sh", "hadoop-ruby.sh"]
+  s.executables = ["papyrus"]
   s.extra_rdoc_files = [
     "README.rdoc"
   ]
@@ -21,14 +22,14 @@ Gem::Specification.new do |s|
      "README.rdoc",
      "Rakefile",
      "VERSION",
-     "bin/hadoop-hudson.sh",
-     "bin/hadoop-ruby.sh",
-     "bin/hrd",
+     "bin/papyrus",
      "conf/hadoop-site.xml",
+     "contrib/hudson/hadoop-hudson.sh",
+     "contrib/hudson/hadoop-ruby.sh",
      "examples/hive_like_test.rb",
      "examples/log_analysis_test.rb",
      "examples/word_count_test.rb",
-     "hadoop-rubydsl.gemspec",
+     "hadoop-papyrus.gemspec",
      "lib/core.rb",
      "lib/dsl_init.rb",
      "lib/hadoop_dsl.rb",
