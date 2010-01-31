@@ -17,10 +17,10 @@ Required gems are all on GemCutter.
 
 == Usage
 
-1. Run Hadoop cluster on your machines and set HADOOP_HOME env variable.
+1. Run Hadoop cluster on your machines and put your 'hadoop' executable to your PATH or set HADOOP_HOME env variable.
 2. put files into your hdfs. ex) wc/inputs/file1
-3. Now you can run 'hrd' like below:
- $ hrd examples/word_count_test.rb
+3. Now you can run 'papyrus' like below:
+ $ papyrus examples/word_count_test.rb
 You can get Hadoop job results in your hdfs wc/outputs/part-*
 
 == Examples
