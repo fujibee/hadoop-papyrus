@@ -33,7 +33,7 @@ public class HadoopRuby extends CommandInterpreter {
 	protected String[] buildCommandLine(FilePath script) {
 		File rootDir = Hudson.getInstance().getRootDir();
 		String cmd = rootDir.toString()
-				+ "/hadoop-ruby/bin/hadoop-ruby.sh";
+				+ "/hadoop-ruby/bin/hadoop-papyrus.sh";
 		return new String[] { cmd, script.getRemote() };
 	}
 
