@@ -103,12 +103,12 @@ describe LogAnalysisMapper do
   end
 
   it 'can group date monthly' do
-    value = '2010/1/1 newyearday'
+    value = "2010/1/1 21:23:10\tnewyearday"
     mapper = LogAnalysisMapper.new(nil, nil, value)
-    mapper.separate(' ')
+    mapper.separate("\t")
     mapper.column_name 'date', 'holiday'
 
-    ['yearly', 'monthly', 'daily'].each do |term|
+    ['yearly', 'monthly', 'daily', 'hour_of_day'].each do |term|
       mapper.topic(term) do
         mapper.group_date_by mapper.column[:date], term.to_sym
         mapper.count_uniq mapper.column[:holiday]
@@ -118,7 +118,8 @@ describe LogAnalysisMapper do
       [
         {"yearly\t2010\tnewyearday" => 1},
         {"monthly\t201001\tnewyearday" => 1},
-        {"daily\t20100101\tnewyearday" => 1}
+        {"daily\t20100101\tnewyearday" => 1},
+        {"hour_of_day\t21\tnewyearday" => 1}
       ]
   end
 

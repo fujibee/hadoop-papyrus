@@ -63,6 +63,7 @@ module HadoopDsl::LogAnalysis
       require 'time'
       time = parse_time(column.value)
       time_key = case term
+                 when :hour_of_day then time.strftime('%H') 
                  when :daily then time.strftime('%Y%m%d') 
                  when :monthly then time.strftime('%Y%m') 
                  when :yearly then time.strftime('%Y') 
