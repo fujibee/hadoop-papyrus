@@ -31,8 +31,8 @@ data 'apache log on test2' do
     end
 
     topic 'ua counts by daily' do
-#      group_date_by column[:access_date], :daily
-#      count_uniq column[:ua]
+      group_date_by column[:access_date], :daily
+      count_uniq column[:ua]
     end
 
 #    topic 'total bytes' do

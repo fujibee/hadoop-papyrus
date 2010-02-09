@@ -84,6 +84,10 @@ module HadoopDsl::LogAnalysis
       emit(current_topic.key => 1)
     end
 
+    def count
+      emit(current_topic.key => 1)
+    end
+
     def sum(column)
       emit(current_topic.key => column.value.to_i)
     end

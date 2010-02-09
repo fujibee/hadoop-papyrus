@@ -66,6 +66,15 @@ describe LogAnalysisMapper do
     mapper.emitted.should == [{"t1\torig value" => 1}]
   end
 
+  it 'should just count' do
+    value = 'count only'
+    mapper = LogAnalysisMapper.new(nil, nil, value)
+    mapper.separate(' ')
+    mapper.topic('t1') { mapper.count }
+
+    mapper.emitted.should == [{"t1" => 1}]
+  end
+
   it 'should sum column value' do
     value = 'sum 123'
     mapper = LogAnalysisMapper.new(nil, nil, value)
