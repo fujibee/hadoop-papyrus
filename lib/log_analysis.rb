@@ -119,12 +119,22 @@ module HadoopDsl::LogAnalysis
     end
 
     def count_uniq(column)
-      aggregate if @model.topic == @model.current_topic
+      aggregate_on_topic
+    end
+
+    def count
+      aggregate_on_topic
     end
 
     def sum(column)
+      aggregate_on_topic
+    end
+
+  private
+    def aggregate_on_topic
       aggregate if @model.topic == @model.current_topic
     end
+
   end
 
   # model
