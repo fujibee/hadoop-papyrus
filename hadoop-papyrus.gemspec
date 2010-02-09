@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Koichi Fujikawa"]
-  s.date = %q{2010-01-31}
+  s.date = %q{2010-02-09}
   s.default_executable = %q{papyrus}
   s.description = %q{Hadoop papyrus - Ruby DSL for Hadoop}
   s.email = %q{fujibee@gmail.com}
@@ -24,8 +24,16 @@ Gem::Specification.new do |s|
      "VERSION",
      "bin/papyrus",
      "conf/hadoop-site.xml",
-     "contrib/hudson/hadoop-hudson.sh",
-     "contrib/hudson/hadoop-ruby.sh",
+     "contrib/hudson/bin/hadoop",
+     "contrib/hudson/bin/hadoop-papyrus.sh",
+     "contrib/hudson/conf/hadoop-site.xml",
+     "contrib/hudson/plugins/hadoop-ruby/.gitignore",
+     "contrib/hudson/plugins/hadoop-ruby/pom.xml",
+     "contrib/hudson/plugins/hadoop-ruby/src/main/java/hudson/plugins/hadoop/ruby/HadoopRuby.java",
+     "contrib/hudson/plugins/hadoop-ruby/src/main/java/hudson/plugins/hadoop/ruby/ItemListenerImpl.java",
+     "contrib/hudson/plugins/hadoop-ruby/src/main/resources/hudson/plugins/hadoop/ruby/HadoopRuby/config.jelly",
+     "contrib/hudson/plugins/hadoop-ruby/src/main/resources/index.jelly",
+     "contrib/hudson/plugins/hadoop-ruby/src/main/webapp/help.html",
      "examples/hive_like_test.rb",
      "examples/log_analysis_test.rb",
      "examples/word_count_test.rb",
