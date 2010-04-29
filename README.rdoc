@@ -51,6 +51,9 @@ Log Analysis DSL script
    end
  end
 
+== Run spec
+Set HADOOP_HOME on your env and run 'jruby -S rake spec'
+
 == Author
 Koichi Fujikawa <fujibee@gmail.com>
 
