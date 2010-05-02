@@ -4,7 +4,7 @@ require 'mapred_factory'
 include HadoopDsl
 
 describe 'MapRed Factory' do
-  before(:all) do
+  before(:each) do
     @script = create_tmp_script("dsl 'LogAnalysis'")
   end
 

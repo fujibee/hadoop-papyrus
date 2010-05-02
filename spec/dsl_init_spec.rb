@@ -2,7 +2,7 @@ require 'dsl_init'
 
 describe 'mapreduce init' do
 
-  before(:all) do
+  before(:each) do
     @script = create_tmp_script(<<-EOF)
 dsl 'LogAnalysis'
 data 'test' do
