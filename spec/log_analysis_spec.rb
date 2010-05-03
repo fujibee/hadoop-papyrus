@@ -32,6 +32,20 @@ describe LogAnalysisMapper do
     mapper.column[1].value.should == 'ip,sum'
   end
 
+  it 'should separate by tab char (TSV)' do
+    value = "Lorem\tipsum\tdolor\tsit\tamet,"
+    mapper = LogAnalysisMapper.new(nil, nil, value)
+    mapper.separate(:tsv)
+
+    mapper.column[4].value.should == 'amet,'
+  end
+
+  it 'should not separate by non support separator' do
+    value = 'Lorem ipsum dolor sit amet,'
+    mapper = LogAnalysisMapper.new(nil, nil, value)
+    lambda { mapper.separate(:nonsupport) }.should raise_error
+  end
+
   it 'should non-local exit if cannot separate by pattern' do
     mapper = LogAnalysisMapper.new(nil, nil, @apache_log + " a")
     mapper.each_line do

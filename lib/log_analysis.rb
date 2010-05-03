@@ -25,16 +25,17 @@ module HadoopDsl::LogAnalysis
     end
 
     def separate(sep)
-      case sep
-      when Symbol
-        case sep
-        when :csv
-          require 'csv'
-          parts = CSV.parse(value).flatten
-        end
-      when String
-        parts = value.split(sep)
-      end
+      parts = case sep
+              when Symbol
+                case sep
+                when :csv
+                  require 'csv'
+                  CSV.parse(value).flatten
+                when :tsv then value.split("\t")
+                else raise "no supported separator #{sep}"
+                end
+              when String then value.split(sep)
+              end
       @model.create_or_replace_columns_with(parts) {|column, value| column.value = value}
     end
 
