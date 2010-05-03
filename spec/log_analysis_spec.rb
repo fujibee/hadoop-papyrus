@@ -23,6 +23,15 @@ describe LogAnalysisMapper do
     mapper.column[2].value.should == 'frank'
   end
 
+  it 'should separate by comma (CSV) with csv library' do
+    value = '"Lorem","ip,sum","dolor","sit","amet"'
+    mapper = LogAnalysisMapper.new(nil, nil, value)
+    mapper.separate(:csv)
+
+    require('csv').should be_false # already required
+    mapper.column[1].value.should == 'ip,sum'
+  end
+
   it 'should non-local exit if cannot separate by pattern' do
     mapper = LogAnalysisMapper.new(nil, nil, @apache_log + " a")
     mapper.each_line do
